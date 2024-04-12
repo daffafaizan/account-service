@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(SignupRequest request) {
+    public ResponseEntity<Object> signup(@RequestBody SignupRequest request) {
         SignupResponse response = authService.signup(request);
         return ResponseHandler.generateResponse(new Response("Successfully signed up!", HttpStatus.OK, "SUCCESS", response));
     }

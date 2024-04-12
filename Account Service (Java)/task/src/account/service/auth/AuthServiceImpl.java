@@ -12,8 +12,9 @@ public class AuthServiceImpl implements AuthService {
         String name = request.getName();
         String lastname = request.getLastname();
         String email = request.getEmail();
+        String password = request.getPassword();
 
-        if (name == null || lastname == null || email == null) {
+        if (name == null || lastname == null || email == null || password == null) {
             throw new IllegalArgumentException();
         }
 

@@ -27,8 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@RequestBody SignupRequest request) {
-        SignupResponse response = authService.signup(request);
-        return ResponseHandler.generateResponse(new Response("Successfully signed up!", HttpStatus.OK, "SUCCESS", response));
+    public SignupResponse signup(@RequestBody SignupRequest request) {
+        return authService.signup(request);
     }
 }

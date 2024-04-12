@@ -14,12 +14,8 @@ public class AuthServiceImpl implements AuthService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        if (isValid(name) || isValid(lastname) || isValid(email) || isValid(password)) {
-            throw new Exception("All required fields must be filled!");
-        }
-
-        if (!email.endsWith("@acme.com")) {
-            throw new Exception("Your corporate email is not accepted!");
+        if (isValid(name) || isValid(lastname) || isValid(email) || isValid(password) || !email.endsWith("@acme.com")) {
+            throw new Exception();
         }
 
         return new SignupResponse(name, lastname, email);

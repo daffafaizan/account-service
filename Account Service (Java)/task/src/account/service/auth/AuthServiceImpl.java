@@ -14,10 +14,14 @@ public class AuthServiceImpl implements AuthService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        if (name == null || lastname == null || email == null || password == null) {
-            throw new IllegalArgumentException();
+        if (isValid(name) || isValid(lastname) || isValid(email) || isValid(password)) {
+            throw new IllegalArgumentException("All required fields must be filled!");
         }
 
         return new SignupResponse(name, lastname, email);
+    }
+
+    private Boolean isValid(String field) {
+        return field == null || field.isEmpty();
     }
 }

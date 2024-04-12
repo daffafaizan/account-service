@@ -27,7 +27,12 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public SignupResponse signup(@RequestBody SignupRequest request) {
-        return authService.signup(request);
+    public ResponseEntity<Object> signup(@RequestBody SignupRequest request) {
+        try {
+            SignupResponse response = authService.signup(request);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

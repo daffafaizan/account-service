@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     @Override
-    public SignupResponse signup(SignupRequest request) {
+    public SignupResponse signup(SignupRequest request) throws Exception {
         String name = request.getName();
         String lastname = request.getLastname();
         String email = request.getEmail();
         String password = request.getPassword();
 
         if (isValid(name) || isValid(lastname) || isValid(email) || isValid(password)) {
-            throw new IllegalArgumentException("All required fields must be filled!");
+            throw new Exception("All required fields must be filled!");
+        }
+
+        if (!email.endsWith("@acme.com")) {
+            throw new Exception("Your corporate email is not accepted!");
         }
 
         return new SignupResponse(name, lastname, email);

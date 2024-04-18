@@ -1,4 +1,4 @@
-package account.dto.auth.Response;
+package account.dto.auth.response;
 
 public class SignupResponse {
     private final String name;

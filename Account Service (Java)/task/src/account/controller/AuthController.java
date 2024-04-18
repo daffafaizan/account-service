@@ -1,7 +1,7 @@
 package account.controller;
 
-import account.dto.auth.Request.SignupRequest;
-import account.dto.auth.Response.SignupResponse;
+import account.dto.auth.request.SignupRequest;
+import account.dto.auth.response.SignupResponse;
 import account.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package account.dto.auth.Request;
+package account.dto.auth.request;
 
 import jakarta.validation.constraints.NotNull;
 

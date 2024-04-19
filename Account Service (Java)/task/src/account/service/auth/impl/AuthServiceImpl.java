@@ -1,7 +1,8 @@
-package account.service.auth;
+package account.service.auth.impl;
 
 import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
+import account.service.auth.AuthService;
 import org.springframework.stereotype.Service;
 
 @Service

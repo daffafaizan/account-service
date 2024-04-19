@@ -23,6 +23,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private Boolean isInvalid(String field) {
-        return field == null || field.isEmpty();
+        return field.isEmpty();
     }
 }

@@ -7,12 +7,18 @@ import jakarta.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long userId;
+    private Integer userId;
     private String name;
     private String lastname;
     private String email;
     private String password;
 
+    public Integer getId() {
+        return this.userId;
+    }
+    public void setId(Integer userId) {
+        this.userId = userId;
+    }
     public String getName() {
         return this.name;
     }
@@ -30,5 +36,11 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public String getPassword() {
+        return this.password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

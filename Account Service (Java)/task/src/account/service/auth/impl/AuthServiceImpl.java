@@ -32,13 +32,26 @@ public class AuthServiceImpl implements AuthService {
             throw new Exception();
         }
 
+        String name = request.getName();
+        String lastname = request.getLastname();
+        String email = request.getEmail().toLowerCase();
+        String password = request.getPassword();
+
+        if (isUserExist(email)) {
+            throw new Exception();
+        }
+
         User newUser = new User();
-        newUser.setName(request.getName());
-        newUser.setLastname(request.getLastname());
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(request.getPassword());
+        newUser.setName(name);
+        newUser.setLastname(lastname);
+        newUser.setEmail(email);
+        newUser.setPassword(password);
         userRepository.save(newUser);
 
         return new SignupResponse(request.getName(), request.getLastname(), request.getEmail());
+    }
+
+    private boolean isUserExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }

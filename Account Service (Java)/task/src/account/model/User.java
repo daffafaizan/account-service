@@ -12,6 +12,7 @@ public class User {
     private String lastname;
     private String email;
     private String password;
+    private String authority;
 
     public Integer getId() {
         return this.userId;
@@ -42,5 +43,11 @@ public class User {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public String getAuthority() {
+        return this.authority;
+    }
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 }

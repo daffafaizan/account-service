@@ -2,6 +2,7 @@ package account.service.auth.impl;
 
 import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
+import account.exception.auth.EmailAlreadyExistsException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
@@ -26,11 +27,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public SignupResponse signup(SignupRequest request) throws Exception {
-
-        if (request.getName().isEmpty() || request.getName() == null || request.getLastname().isEmpty() || request.getLastname() == null || request.getEmail().isEmpty() || request.getEmail() == null || request.getPassword().isEmpty() || request.getPassword() == null || !emailPattern.matcher(request.getEmail()).matches() ) {
-            throw new Exception();
-        }
+    public SignupResponse signup(SignupRequest request) {
 
         String name = request.getName();
         String lastname = request.getLastname();
@@ -38,14 +35,14 @@ public class AuthServiceImpl implements AuthService {
         String password = request.getPassword();
 
         if (isUserExist(email)) {
-            throw new Exception();
+            throw new EmailAlreadyExistsException(email);
         }
 
         User newUser = new User();
         newUser.setName(name);
         newUser.setLastname(lastname);
         newUser.setEmail(email);
-        newUser.setPassword(password);
+        newUser.setPassword(passwordEncoder.encode(password));
         userRepository.save(newUser);
 
         return new SignupResponse(request.getName(), request.getLastname(), request.getEmail());

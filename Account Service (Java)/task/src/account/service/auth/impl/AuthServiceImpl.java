@@ -3,6 +3,7 @@ package account.service.auth.impl;
 import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
 import account.service.auth.AuthService;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public SignupResponse signup(SignupRequest request) throws Exception {
 
-        if (request.getName().isEmpty() || request.getName() == null || request.getLastname().isEmpty() || request.getLastname() == null || request.getEmail().isEmpty() || request.getEmail() == null || request.getPassword().isEmpty() || request.getPassword() == null || !emailPattern.matcher(request.getEmail()).matches() ) {
+        if (StringUtils.isBlank(request.getName()) || StringUtils.isBlank(request.getLastname()) || StringUtils.isBlank(request.getEmail()) || StringUtils.isBlank(request.getPassword()) || !emailPattern.matcher(request.getEmail()).matches() ) {
             throw new Exception();
         }
 

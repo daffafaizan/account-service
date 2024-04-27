@@ -15,7 +15,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public SignupResponse signup(SignupRequest request) throws Exception {
 
-        if (StringUtils.isBlank(request.getName()) || StringUtils.isBlank(request.getLastname()) || StringUtils.isBlank(request.getEmail()) || StringUtils.isBlank(request.getPassword()) || !emailPattern.matcher(request.getEmail()).matches() ) {
+        if (StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getLastname()) || StringUtils.isEmpty(request.getEmail()) || StringUtils.isEmpty(request.getPassword()) || !emailPattern.matcher(request.getEmail()).matches() ) {
             throw new Exception();
         }
 

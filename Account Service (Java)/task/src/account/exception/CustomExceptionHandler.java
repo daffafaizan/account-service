@@ -22,7 +22,7 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseStatusException methodArgumentNotValidExceptionHandler(Exception e) {
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request");
+    public ResponseStatusException methodArgumentNotValidExceptionHandler() {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

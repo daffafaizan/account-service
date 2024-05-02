@@ -4,6 +4,7 @@ import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
+import account.exception.auth.InvalidMethodArgumentsException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
@@ -37,11 +38,11 @@ public class AuthServiceImpl implements AuthService {
         String password = request.getPassword();
 
         if (isUserExist(email)) {
-            throw new EmailAlreadyExistsException(email);
+            throw new EmailAlreadyExistsException();
         }
 
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(lastname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password) || !emailPattern.matcher(email).matches() ) {
-            throw new IllegalArgumentException();
+            throw new InvalidMethodArgumentsException();
         }
 
         User newUser = new User();
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(newUser);
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundException(email));
+                .orElseThrow(EmailNotFoundException::new);
 
         return new SignupResponse(user.getId(), name, lastname, email);
     }

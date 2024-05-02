@@ -4,13 +4,11 @@ import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
-import account.exception.auth.InvalidMethodArgumentsException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -39,10 +37,6 @@ public class AuthServiceImpl implements AuthService {
 
         if (isUserExist(email)) {
             throw new EmailAlreadyExistsException();
-        }
-
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(lastname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password) || !emailPattern.matcher(email).matches() ) {
-            throw new InvalidMethodArgumentsException();
         }
 
         User newUser = new User();

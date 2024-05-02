@@ -1,6 +1,7 @@
 package account.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "users")
@@ -10,6 +11,7 @@ public class User {
     private Integer userId;
     private String name;
     private String lastname;
+    @Email(regexp = "^.+@acme.com$")
     private String email;
     private String password;
     private String authority;

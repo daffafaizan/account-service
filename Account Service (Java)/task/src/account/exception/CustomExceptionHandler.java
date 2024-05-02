@@ -2,9 +2,7 @@ package account.exception;
 
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
-import account.exception.auth.InvalidMethodArgumentsException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,8 +21,8 @@ public class CustomExceptionHandler {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(value = InvalidMethodArgumentsException.class)
-    public ResponseEntity<Object> invalidMethodArgumentsExceptionHandler(Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseStatusException methodArgumentNotValidExceptionHandler(Exception e) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request");
     }
 }

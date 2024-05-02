@@ -9,19 +9,24 @@ import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Pattern;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Pattern emailPattern;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailPattern = Pattern.compile("^.+@acme.com$");
     }
-
 
     @Override
     public SignupResponse signup(SignupRequest request) {
@@ -35,17 +40,22 @@ public class AuthServiceImpl implements AuthService {
             throw new EmailAlreadyExistsException(email);
         }
 
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(lastname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password) || !emailPattern.matcher(email).matches() ) {
+            throw new IllegalArgumentException();
+        }
+
         User newUser = new User();
         newUser.setName(name);
         newUser.setLastname(lastname);
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
+
         userRepository.save(newUser);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(email));
 
-        return new SignupResponse(user.getId(), request.getName(), request.getLastname(), request.getEmail());
+        return new SignupResponse(user.getId(), name, lastname, email);
     }
 
     private boolean isUserExist(String email) {

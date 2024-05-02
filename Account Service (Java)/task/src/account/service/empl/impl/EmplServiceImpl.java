@@ -27,7 +27,7 @@ public class EmplServiceImpl implements EmplService {
     public String getPayment(UserDetails details) throws JsonProcessingException {
         String email = details.getUsername();
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
 
         Integer userId = user.getId();

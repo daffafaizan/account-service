@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(newUser);
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
 
         SignupResponse response = new SignupResponse(user.getId(), name, lastname, email);
@@ -55,6 +55,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private boolean isUserExist(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.findByEmailIgnoreCase(email).isPresent();
     }
 }

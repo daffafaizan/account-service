@@ -1,8 +1,8 @@
 package account.controller;
 
 import account.dto.auth.request.SignupRequest;
-import account.dto.auth.response.SignupResponse;
 import account.service.auth.AuthService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequest request) throws Exception {
-        SignupResponse response = authService.signup(request);
+    public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequest request) throws JsonProcessingException {
+        String response = authService.signup(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -5,6 +5,8 @@ import account.exception.auth.EmailNotFoundException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.empl.EmplService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,15 @@ public class EmplServiceImpl implements EmplService {
 
     @Autowired
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     public EmplServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public EmplPaymentResponse getPayment(UserDetails details) {
+    public String getPayment(UserDetails details) throws JsonProcessingException {
         String email = details.getUsername();
 
         User user = userRepository.findByEmail(email)
@@ -30,6 +34,8 @@ public class EmplServiceImpl implements EmplService {
         String name = user.getName();
         String lastname = user.getLastname();
 
-        return new EmplPaymentResponse(userId, name, lastname, email);
+        EmplPaymentResponse response = new EmplPaymentResponse(userId, name, lastname, email);
+
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
     }
 }

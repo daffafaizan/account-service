@@ -1,8 +1,8 @@
 package account.service.auth;
 
 import account.dto.auth.request.SignupRequest;
-import account.dto.auth.response.SignupResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface AuthService {
-    SignupResponse signup(SignupRequest request);
+    String signup(SignupRequest request) throws JsonProcessingException;
 }

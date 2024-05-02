@@ -25,8 +25,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // For Postman
                 .headers(headers -> headers.frameOptions().disable()) // For the H2 console
                 .authorizeHttpRequests(auth -> auth  // manage access
-                                .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
-                        // other matchers
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
                 )
                 .sessionManagement(sessions -> sessions
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // no session

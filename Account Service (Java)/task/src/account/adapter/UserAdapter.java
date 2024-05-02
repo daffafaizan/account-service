@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class UserAdapter implements UserDetails {
@@ -17,7 +18,8 @@ public class UserAdapter implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getAuthority()));
+        // return List.of(new SimpleGrantedAuthority(user.getAuthority()));
+        return Collections.emptyList();
     }
 
     @Override

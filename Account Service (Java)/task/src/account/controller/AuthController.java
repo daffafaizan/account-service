@@ -2,7 +2,6 @@ package account.controller;
 
 import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.SignupResponse;
-import account.model.User;
 import account.service.auth.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

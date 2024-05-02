@@ -11,20 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.regex.Pattern;
-
 @Service
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Pattern emailPattern;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.emailPattern = Pattern.compile("^.+@acme.com$");
     }
 
     @Override

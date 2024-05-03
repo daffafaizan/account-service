@@ -1,7 +1,6 @@
 package account.exception;
 
-import account.exception.auth.EmailAlreadyExistsException;
-import account.exception.auth.EmailNotFoundException;
+import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +47,20 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = BreachedPasswordException.class)
+    public ResponseEntity<Object> breachedPasswordExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The password is in the hacker's database!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = MinimumCharactersException.class)
+    public ResponseEntity<Object> minimumCharactersExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Password length must be 12 chars minimum!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = SamePasswordsException.class)
+    public ResponseEntity<Object> samePasswordsExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The passwords must be different!"), HttpStatus.BAD_REQUEST);
     }
 }

@@ -26,7 +26,7 @@ public class AcctController {
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<Object> uploadPayrolls(@RequestBody @Valid List<UploadPayrollRequest> requests) throws JsonProcessingException {
+    public ResponseEntity<Object> uploadPayrolls(@RequestBody List<@Valid UploadPayrollRequest> requests) throws JsonProcessingException {
         String response = acctService.uploadPayroll(requests);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

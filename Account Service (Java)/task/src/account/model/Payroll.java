@@ -1,8 +1,10 @@
 package account.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -21,9 +23,11 @@ public class Payroll {
     private String lastname;
     @NotNull
     @NotBlank
+    @DateTimeFormat(pattern = "mm-YYYY")
     private YearMonth period;
     @NotNull
     @NotBlank
+    @Min(value = 0)
     private BigDecimal salary;
 
     public Integer getPayrollId() {

@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth  // manage access
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
+                        .anyRequest().authenticated()
 
                 )
                 .sessionManagement(sessions -> sessions

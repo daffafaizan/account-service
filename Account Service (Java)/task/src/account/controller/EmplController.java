@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/empl")
 public class EmplController {
 
-    @Autowired
     private final EmplService emplService;
 
+    @Autowired
     public EmplController(EmplService emplService) {
         this.emplService = emplService;
     }

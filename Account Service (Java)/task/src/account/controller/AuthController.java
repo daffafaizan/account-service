@@ -1,5 +1,6 @@
 package account.controller;
 
+import account.dto.auth.request.ChangePassRequest;
 import account.dto.auth.request.SignupRequest;
 import account.service.auth.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +28,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequest request) throws JsonProcessingException {
         String response = authService.signup(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/changepass")
+    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequest request) throws JsonProcessingException {
+        String response = authService.changepass(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

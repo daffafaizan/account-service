@@ -4,6 +4,7 @@ import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +50,11 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> HttpMessageNotReadableExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = BreachedPasswordException.class)
     public ResponseEntity<Object> breachedPasswordExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The password is in the hacker's database!"), HttpStatus.BAD_REQUEST);
@@ -62,5 +68,10 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = SamePasswordsException.class)
     public ResponseEntity<Object> samePasswordsExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The passwords must be different!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = CredentialsErrorException.class)
+    public ResponseEntity<Object> credentialsErrorExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Wrong credentials!"), HttpStatus.BAD_REQUEST);
     }
 }

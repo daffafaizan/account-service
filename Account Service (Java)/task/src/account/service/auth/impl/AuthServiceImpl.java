@@ -1,5 +1,6 @@
 package account.service.auth.impl;
 
+import account.adapter.UserAdapter;
 import account.dto.auth.request.ChangePassRequest;
 import account.dto.auth.request.SignupRequest;
 import account.dto.auth.response.ChangePassResponse;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +27,11 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
-    private final Authentication auth;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
-        this.auth = SecurityContextHolder.getContext().getAuthentication();
     }
 
     @Override
@@ -62,9 +62,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String changepass(ChangePassRequest request) throws JsonProcessingException {
-        String newPassword = request.getNewPassword();
-        User user = (User) auth.getPrincipal();
+    public String changepass(ChangePassRequest request, UserDetails userDetails) throws JsonProcessingException {
+        String newPassword = request.getNew_password();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new CredentialsErrorException();
+        }
+        UserAdapter userAdapter = (UserAdapter) auth.getPrincipal();
+        String email = userAdapter.getUsername();
+
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(EmailNotFoundException::new);
 
         if (newPassword.length() <= 12) {
             throw new MinimumCharactersException();
@@ -77,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
 
         ChangePassResponse response = new ChangePassResponse(user.getEmail(), "The password has been updated successfully");
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);

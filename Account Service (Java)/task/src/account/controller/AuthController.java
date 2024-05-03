@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +34,8 @@ public class AuthController {
     }
 
     @PostMapping("/changepass")
-    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequest request) throws JsonProcessingException {
-        String response = authService.changepass(request);
+    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequest request, @AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
+        String response = authService.changepass(request, userDetails);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

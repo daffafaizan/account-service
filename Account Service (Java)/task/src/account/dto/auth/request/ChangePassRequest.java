@@ -8,7 +8,7 @@ public class ChangePassRequest {
     @NotBlank
     private String new_password;
 
-    public String getNewPassword() {
+    public String getNew_password() {
         return this.new_password;
     }
 }

@@ -45,6 +45,9 @@ public class AuthServiceImpl implements AuthService {
         if (isUserExist(email)) {
             throw new EmailAlreadyExistsException();
         }
+        if (isNewPasswordInHackersDatabase(password)) {
+            throw new BreachedPasswordException();
+        }
 
         User newUser = new User();
         newUser.setName(name);
@@ -75,14 +78,14 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
 
-        if (newPassword.length() <= 12) {
+        if (isOldAndNewPasswordMatches(newPassword, user.getPassword())) {
+            throw new SamePasswordsException();
+        }
+        if (newPassword.length() < 12) {
             throw new MinimumCharactersException();
         }
         if (isNewPasswordInHackersDatabase(newPassword)) {
             throw new BreachedPasswordException();
-        }
-        if (isOldAndNewPasswordMatches(newPassword, user.getPassword())) {
-            throw new SamePasswordsException();
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));

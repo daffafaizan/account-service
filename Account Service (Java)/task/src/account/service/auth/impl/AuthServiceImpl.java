@@ -23,11 +23,11 @@ import java.util.Arrays;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

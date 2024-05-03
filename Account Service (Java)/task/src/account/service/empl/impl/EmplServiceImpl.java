@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmplServiceImpl implements EmplService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public EmplServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.objectMapper = new ObjectMapper();

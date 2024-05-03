@@ -8,6 +8,10 @@ public class UploadPayrollResponse {
     @NotBlank
     private String status;
 
+    public UploadPayrollResponse(String status) {
+        this.status = status;
+    }
+
     public String getStatus() {
         return this.status;
     }

@@ -1,17 +1,22 @@
 package account.service.auth.impl;
 
+import account.dto.auth.request.ChangePassRequest;
 import account.dto.auth.request.SignupRequest;
+import account.dto.auth.response.ChangePassResponse;
 import account.dto.auth.response.SignupResponse;
-import account.exception.auth.EmailAlreadyExistsException;
-import account.exception.auth.EmailNotFoundException;
+import account.exception.auth.*;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -20,11 +25,13 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
+    private final Authentication auth;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
+        this.auth = SecurityContextHolder.getContext().getAuthentication();
     }
 
     @Override
@@ -54,7 +61,40 @@ public class AuthServiceImpl implements AuthService {
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
     }
 
+    @Override
+    public String changepass(ChangePassRequest request) throws JsonProcessingException {
+        String newPassword = request.getNewPassword();
+        User user = (User) auth.getPrincipal();
+
+        if (newPassword.length() <= 12) {
+            throw new MinimumCharactersException();
+        }
+        if (isNewPasswordInHackersDatabase(newPassword)) {
+            throw new BreachedPasswordException();
+        }
+        if (isOldAndNewPasswordMatches(newPassword, user.getPassword())) {
+            throw new SamePasswordsException();
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        ChangePassResponse response = new ChangePassResponse(user.getEmail(), "The password has been updated successfully");
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+    }
+
     private boolean isUserExist(String email) {
         return userRepository.findByEmailIgnoreCase(email).isPresent();
+    }
+
+    private boolean isOldAndNewPasswordMatches(String newPassword, String oldPassword) {
+        return passwordEncoder.matches(newPassword, oldPassword);
+    }
+
+    private boolean isNewPasswordInHackersDatabase(String newPassword) {
+        String[] database = new String[]{"PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril",
+                "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
+                "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember"};
+
+        return Arrays.asList(database).contains(newPassword);
     }
 }

@@ -11,6 +11,11 @@ public class ChangePassResponse {
     @NotBlank
     private String status;
 
+    public ChangePassResponse(String email, String status) {
+        this.email = email;
+        this.status = status;
+    }
+
     public String getEmail() {
         return this.email;
     }

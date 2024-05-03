@@ -1,6 +1,8 @@
 package account.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -11,9 +13,17 @@ public class Payroll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer payrollId;
+    @NotNull
+    @NotBlank
     private String name;
+    @NotNull
+    @NotBlank
     private String lastname;
+    @NotNull
+    @NotBlank
     private YearMonth period;
+    @NotNull
+    @NotBlank
     private BigDecimal salary;
 
     public Integer getPayrollId() {

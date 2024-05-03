@@ -2,6 +2,8 @@ package account.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
@@ -9,10 +11,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
+    @NotNull
+    @NotBlank
     private String name;
+    @NotNull
+    @NotBlank
     private String lastname;
     @Email(regexp = "^.+@acme.com$")
+    @NotNull
+    @NotBlank
     private String email;
+    @NotNull
+    @NotBlank
     private String password;
     private String authority;
 

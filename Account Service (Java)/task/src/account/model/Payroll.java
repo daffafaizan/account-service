@@ -24,6 +24,7 @@ public class Payroll {
     @NotNull
     @NotBlank
     @DateTimeFormat(pattern = "mm-YYYY")
+    @Column(unique = true)
     private YearMonth period;
     @NotNull
     @NotBlank

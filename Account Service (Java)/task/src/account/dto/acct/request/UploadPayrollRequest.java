@@ -1,5 +1,6 @@
 package account.dto.acct.request;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ public class UploadPayrollRequest {
     @NotNull
     @NotBlank
     @DateTimeFormat(pattern = "mm-YYYY")
+    @Column(unique = true)
     private YearMonth period;
     @NotNull
     @NotBlank

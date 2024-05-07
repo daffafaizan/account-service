@@ -35,6 +35,7 @@ public class CustomExceptionHandler {
         return response;
     }
 
+    // Authentication
     @ExceptionHandler(value = EmailAlreadyExistsException.class)
     public ResponseEntity<Object> emailAlreadyExistsExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "User exist!"), HttpStatus.BAD_REQUEST);

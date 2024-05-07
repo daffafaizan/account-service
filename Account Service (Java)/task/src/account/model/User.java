@@ -17,9 +17,10 @@ public class User {
     @NotNull
     @NotBlank
     private String lastname;
-    @Email(regexp = "^.+@acme.com$")
     @NotNull
     @NotBlank
+    @Email(regexp = "^.+@acme.com$")
+    @Column(unique = true)
     private String email;
     @NotNull
     @NotBlank

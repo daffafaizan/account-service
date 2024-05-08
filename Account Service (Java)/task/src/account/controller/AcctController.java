@@ -1,6 +1,7 @@
 package account.controller;
 
-import account.dto.acct.request.UploadPayrollRequest;
+import account.dto.acct.request.UploadPayrollRequestDTO;
+import account.dto.acct.response.UploadPayloadResponseDTO;
 import account.service.acct.AcctService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
@@ -26,8 +27,8 @@ public class AcctController {
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<Object> uploadPayrolls(@RequestBody List<@Valid UploadPayrollRequest> requests) throws JsonProcessingException {
-        String response = acctService.uploadPayroll(requests);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Object> uploadPayrolls(@RequestBody List<@Valid UploadPayrollRequestDTO> requests) throws JsonProcessingException {
+        acctService.uploadPayroll(requests);
+        return new ResponseEntity<>(new UploadPayloadResponseDTO("Added successfully!"), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package account.controller;
 
+import account.dto.empl.response.GetPaymentResponseDTO;
 import account.model.User;
 import account.service.empl.EmplService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,6 @@ public class EmplController {
     @GetMapping("/payment")
     public ResponseEntity<Object> getPayment(@AuthenticationPrincipal UserDetails details) throws JsonProcessingException {
         User response = emplService.getPayment(details);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new GetPaymentResponseDTO(response), HttpStatus.OK);
     }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface PayrollRepository extends JpaRepository<Payroll, String> {
-    Optional<Payroll> findByEmailIgnoreCase(String email);
+    Optional<Payroll> findByEmployeeIgnoreCase(String employee);
 }

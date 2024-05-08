@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.YearMonth;
 
 public class UploadPayrollRequest {
     @NotNull
@@ -17,7 +16,7 @@ public class UploadPayrollRequest {
     @NotBlank
     @DateTimeFormat(pattern = "mm-YYYY")
     @Column(unique = true)
-    private YearMonth period;
+    private String period;
     @NotNull
     @NotBlank
     @Min(value = 0)
@@ -26,7 +25,7 @@ public class UploadPayrollRequest {
     public String getEmployee() {
         return this.employee;
     }
-    public YearMonth getPeriod() {
+    public String getPeriod() {
         return this.period;
     }
     public BigDecimal getSalary() {

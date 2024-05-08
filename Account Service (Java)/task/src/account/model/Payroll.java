@@ -17,17 +17,18 @@ public class Payroll {
     private Integer payrollId;
     @NotNull
     @NotBlank
+    private String employee;
+    @NotNull
+    @NotBlank
     private String name;
     @NotNull
     @NotBlank
     private String lastname;
     @NotNull
-    @NotBlank
     @DateTimeFormat(pattern = "mm-YYYY")
     @Column(unique = true)
     private YearMonth period;
     @NotNull
-    @NotBlank
     @Min(value = 0)
     private BigDecimal salary;
 
@@ -36,6 +37,12 @@ public class Payroll {
     }
     public void setPayrollId(Integer payrollId) {
         this.payrollId = payrollId;
+    }
+    public String getEmployee() {
+        return this.employee;
+    }
+    public void setEmployee(String employee) {
+        this.employee = employee;
     }
     public String getName() {
         return this.name;

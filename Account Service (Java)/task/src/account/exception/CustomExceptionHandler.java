@@ -1,5 +1,6 @@
 package account.exception;
 
+import account.exception.acct.GeneralUploadPayrollException;
 import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -74,5 +75,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = CredentialsErrorException.class)
     public ResponseEntity<Object> credentialsErrorExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Wrong credentials!"), HttpStatus.BAD_REQUEST);
+    }
+
+    // Accountant
+    @ExceptionHandler(value = GeneralUploadPayrollException.class)
+    public ResponseEntity<Object> generalUploadPayrollExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Error!"), HttpStatus.BAD_REQUEST);
     }
 }

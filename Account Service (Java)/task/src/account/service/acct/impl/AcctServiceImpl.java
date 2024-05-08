@@ -1,6 +1,7 @@
 package account.service.acct.impl;
 
 import account.dto.acct.request.UploadPayrollRequestDTO;
+import account.exception.acct.GeneralUploadPayrollException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.Payroll;
 import account.model.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AcctServiceImpl implements AcctService {
@@ -35,12 +37,21 @@ public class AcctServiceImpl implements AcctService {
         for (UploadPayrollRequestDTO request: requests) {
             User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
                     .orElseThrow(EmailNotFoundException::new);
+            List<Payroll> payrolls = payrollRepository.findAllByEmployeeIgnoreCase(request.getEmployee());
+            YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
+
+            for (Payroll payroll: payrolls) {
+                if (payroll.getEmployee().equals(request.getEmployee()) && payroll.getPeriod().equals(period)) {
+                    throw new GeneralUploadPayrollException();
+                }
+            }
+
             Payroll payroll = new Payroll();
 
             payroll.setEmployee(request.getEmployee());
             payroll.setName(user.getName());
             payroll.setLastname(user.getLastname());
-            payroll.setPeriod(YearMonth.parse(request.getPeriod(), periodFormat));
+            payroll.setPeriod(period);
             payroll.setSalary(request.getSalary());
             payrollRepository.save(payroll);
         }

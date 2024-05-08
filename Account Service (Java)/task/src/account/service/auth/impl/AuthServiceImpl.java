@@ -9,7 +9,6 @@ import account.exception.auth.EmailNotFoundException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

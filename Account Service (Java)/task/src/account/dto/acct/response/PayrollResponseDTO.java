@@ -1,9 +1,9 @@
 package account.dto.acct.response;
 
-public class PayloadResponseDTO {
+public class PayrollResponseDTO {
     private String status;
 
-    public PayloadResponseDTO(String status) {
+    public PayrollResponseDTO(String status) {
         this.status = status;
     }
     public String getStatus() {

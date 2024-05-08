@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,7 +33,7 @@ public class AcctServiceImpl implements AcctService {
 
     @Override
     @Transactional
-    public void uploadPayroll(List<PayrollRequestDTO> requests) {
+    public void uploadPayrolls(List<PayrollRequestDTO> requests) {
         for (PayrollRequestDTO request: requests) {
             User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
                     .orElseThrow(EmailNotFoundException::new);
@@ -54,5 +55,16 @@ public class AcctServiceImpl implements AcctService {
             payroll.setSalary(request.getSalary());
             payrollRepository.save(payroll);
         }
+    }
+
+    @Override
+    public void updatePayroll(PayrollRequestDTO request) {
+        String employee = request.getEmployee();
+        YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
+        BigDecimal salary = request.getSalary();
+
+        Payroll payroll = payrollRepository.findByEmployeeIgnoreCaseAndPeriod(employee, period);
+        payroll.setSalary(salary);
+        payrollRepository.save(payroll);
     }
 }

@@ -18,7 +18,6 @@ public class PayrollRequestDTO {
     @Column(unique = true)
     private String period;
     @NotNull
-    @NotBlank
     @Min(value = 0)
     private BigDecimal salary;
 

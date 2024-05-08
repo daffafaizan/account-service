@@ -1,5 +1,6 @@
 package account.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,30 +9,33 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "users")
 public class User {
+    @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotNull
     @NotBlank
     private String name;
     @NotNull
     @NotBlank
     private String lastname;
-    @NotNull
-    @NotBlank
     @Email(regexp = "^.+@acme.com$")
     @Column(unique = true)
+    @NotNull
+    @NotBlank
     private String email;
+    @JsonIgnore
     @NotNull
     @NotBlank
     private String password;
+    @JsonIgnore
     private String authority;
 
-    public Integer getId() {
-        return this.userId;
+    public Long getId() {
+        return this.id;
     }
-    public void setId(Integer userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getName() {
         return this.name;

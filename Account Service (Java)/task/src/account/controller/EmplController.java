@@ -1,5 +1,6 @@
 package account.controller;
 
+import account.model.User;
 import account.service.empl.EmplService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class EmplController {
 
     @GetMapping("/payment")
     public ResponseEntity<Object> getPayment(@AuthenticationPrincipal UserDetails details) throws JsonProcessingException {
-        String response = emplService.getPayment(details);
+        User response = emplService.getPayment(details);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

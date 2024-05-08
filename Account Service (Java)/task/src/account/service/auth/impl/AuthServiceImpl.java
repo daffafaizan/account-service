@@ -1,16 +1,15 @@
 package account.service.auth.impl;
 
 import account.adapter.UserAdapter;
-import account.dto.auth.request.ChangePassRequest;
-import account.dto.auth.request.SignupRequest;
-import account.dto.auth.response.ChangePassResponse;
-import account.dto.auth.response.SignupResponse;
+import account.dto.auth.request.ChangePassRequestDTO;
 import account.exception.auth.*;
+import account.dto.auth.request.SignupRequestDTO;
+import account.exception.auth.EmailAlreadyExistsException;
+import account.exception.auth.EmailNotFoundException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,17 +24,15 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ObjectMapper objectMapper;
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public String signup(SignupRequest request) throws JsonProcessingException {
+    public User signup(SignupRequestDTO request) {
 
         String name = request.getName();
         String lastname = request.getLastname();
@@ -56,16 +53,13 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(newUser);
-        User user = userRepository.findByEmailIgnoreCase(email)
+
+        return userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
-
-        SignupResponse response = new SignupResponse(user.getId(), name, lastname, email);
-
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
     }
 
     @Override
-    public String changepass(ChangePassRequest request, UserDetails userDetails) throws JsonProcessingException {
+    public String changepass(ChangePassRequestDTO request, UserDetails userDetails) {
         String newPassword = request.getNew_password();
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -91,8 +85,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        ChangePassResponse response = new ChangePassResponse(user.getEmail(), "The password has been updated successfully");
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+        return user.getEmail();
     }
 
     private boolean isUserExist(String email) {

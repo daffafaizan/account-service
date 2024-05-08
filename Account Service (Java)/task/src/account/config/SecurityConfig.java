@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/acct/payments").permitAll()
                         .anyRequest().authenticated()
+                        .anyRequest().denyAll()
 
                 )
                 .sessionManagement(sessions -> sessions

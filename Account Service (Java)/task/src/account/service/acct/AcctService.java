@@ -1,9 +1,9 @@
 package account.service.acct;
 
-import account.dto.acct.request.UploadPayrollRequestDTO;
+import account.dto.acct.request.PayrollRequestDTO;
 
 import java.util.List;
 
 public interface AcctService {
-    void uploadPayroll(List<UploadPayrollRequestDTO> requests);
+    void uploadPayroll(List<PayrollRequestDTO> requests);
 }

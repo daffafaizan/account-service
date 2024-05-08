@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 
-public class UploadPayrollRequestDTO {
+public class PayrollRequestDTO {
     @NotNull
     @NotBlank
     private String employee;

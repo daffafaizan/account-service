@@ -9,9 +9,10 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "users")
 public class User {
+    @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotNull
     @NotBlank
     private String name;
@@ -27,14 +28,12 @@ public class User {
     @NotBlank
     private String password;
     @JsonIgnore
-    @NotNull
-    @NotBlank
     private String authority;
 
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getName() {

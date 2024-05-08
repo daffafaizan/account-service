@@ -1,6 +1,6 @@
 package account.service.auth.impl;
 
-import account.dto.auth.request.SignupRequest;
+import account.dto.auth.request.SignupRequestDTO;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.User;
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User signup(SignupRequest request) throws JsonProcessingException {
+    public User signup(SignupRequestDTO request) throws JsonProcessingException {
 
         String name = request.getName();
         String lastname = request.getLastname();

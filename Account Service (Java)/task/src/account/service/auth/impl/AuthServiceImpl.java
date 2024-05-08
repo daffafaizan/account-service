@@ -1,7 +1,6 @@
 package account.service.auth.impl;
 
 import account.dto.auth.request.SignupRequest;
-import account.dto.auth.response.SignupResponse;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.User;
@@ -19,16 +18,14 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ObjectMapper objectMapper;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public String signup(SignupRequest request) throws JsonProcessingException {
+    public User signup(SignupRequest request) throws JsonProcessingException {
 
         String name = request.getName();
         String lastname = request.getLastname();
@@ -46,12 +43,9 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(newUser);
-        User user = userRepository.findByEmailIgnoreCase(email)
+
+        return userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
-
-        SignupResponse response = new SignupResponse(user.getId(), name, lastname, email);
-
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
     }
 
     private boolean isUserExist(String email) {

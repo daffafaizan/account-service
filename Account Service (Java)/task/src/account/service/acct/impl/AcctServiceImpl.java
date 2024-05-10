@@ -2,6 +2,8 @@ package account.service.acct.impl;
 
 import account.dto.acct.request.PayrollRequestDTO;
 import account.exception.acct.GeneralUploadPayrollException;
+import account.exception.acct.NegativeSalaryException;
+import account.exception.acct.PeriodIsInvalidException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.Payroll;
 import account.model.User;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -38,6 +39,14 @@ public class AcctServiceImpl implements AcctService {
         for (PayrollRequestDTO request: requests) {
             User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
                     .orElseThrow(EmailNotFoundException::new);
+
+            if (!isPeriodValid(request.getPeriod())) {
+                throw new PeriodIsInvalidException();
+            }
+            if (!isSalaryValid(request.getSalary())) {
+                throw new NegativeSalaryException();
+            }
+
             YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
 
             if (isEmployeeWithPeriodExist(request.getEmployee(), period)) {
@@ -68,6 +77,20 @@ public class AcctServiceImpl implements AcctService {
 
     private boolean isEmployeeWithPeriodExist(String employee, YearMonth period) {
         return payrollRepository.findByEmployeeIgnoreCaseAndPeriod(employee, period) != null;
+    }
+
+    private boolean isPeriodValid(String period) {
+        YearMonth p;
+        try {
+            p = YearMonth.parse(period, periodFormat);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isSalaryValid(BigDecimal salary) {
+        return salary.signum() > 0;
     }
 
 }

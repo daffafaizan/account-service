@@ -1,6 +1,8 @@
 package account.exception;
 
 import account.exception.acct.GeneralUploadPayrollException;
+import account.exception.acct.NegativeSalaryException;
+import account.exception.acct.PeriodIsInvalidException;
 import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -81,5 +83,15 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = GeneralUploadPayrollException.class)
     public ResponseEntity<Object> generalUploadPayrollExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Error!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = NegativeSalaryException.class)
+    public ResponseEntity<Object> negativeSalaryExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = PeriodIsInvalidException.class)
+    public ResponseEntity<Object> periodIsInvalidExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

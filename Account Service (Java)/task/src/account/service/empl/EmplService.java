@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EmplService {
     List<Payroll> getPayment(UserDetails details);
+    Payroll getPaymentByPeriod(UserDetails details, String period);
 }

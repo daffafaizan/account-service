@@ -1,7 +1,7 @@
 package account.dto.acct.response;
 
 public class PayrollResponseDTO {
-    private final String status;
+    private String status;
 
     public PayrollResponseDTO(String status) {
         this.status = status;

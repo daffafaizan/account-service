@@ -10,7 +10,6 @@ import account.exception.auth.EmailNotFoundException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User signup(SignupRequestDTO request) throws JsonProcessingException {
+    public User signup(SignupRequestDTO request) {
 
         String name = request.getName();
         String lastname = request.getLastname();
@@ -60,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String changepass(ChangePassRequestDTO request, UserDetails userDetails) throws JsonProcessingException {
+    public String changepass(ChangePassRequestDTO request, UserDetails userDetails) {
         String newPassword = request.getNew_password();
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

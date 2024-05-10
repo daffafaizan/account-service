@@ -5,7 +5,6 @@ import account.dto.auth.request.SignupRequestDTO;
 import account.dto.auth.response.ChangePassResponseDTO;
 import account.model.User;
 import account.service.auth.AuthService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,13 +29,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequestDTO request) throws JsonProcessingException {
+    public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequestDTO request) {
         User response = authService.signup(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/changepass")
-    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
+    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
         String response = authService.changepass(request, userDetails);
         return new ResponseEntity<>(new ChangePassResponseDTO(response, "The password has been updated successfully"), HttpStatus.OK);
     }

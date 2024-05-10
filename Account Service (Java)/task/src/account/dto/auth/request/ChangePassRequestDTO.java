@@ -3,7 +3,7 @@ package account.dto.auth.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class ChangePassRequest {
+public class ChangePassRequestDTO {
     @NotNull
     @NotBlank
     private String new_password;

@@ -1,8 +1,8 @@
 package account.service.auth.impl;
 
 import account.adapter.UserAdapter;
-import account.dto.auth.request.ChangePassRequest;
-import account.dto.auth.response.ChangePassResponse;
+import account.dto.auth.request.ChangePassRequestDTO;
+import account.dto.auth.response.ChangePassResponseDTO;
 import account.exception.auth.*;
 import account.dto.auth.request.SignupRequestDTO;
 import account.exception.auth.EmailAlreadyExistsException;
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String changepass(ChangePassRequest request, UserDetails userDetails) throws JsonProcessingException {
+    public String changepass(ChangePassRequestDTO request, UserDetails userDetails) throws JsonProcessingException {
         String newPassword = request.getNew_password();
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -86,8 +86,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        ChangePassResponse response = new ChangePassResponse(user.getEmail(), "The password has been updated successfully");
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+        return user.getEmail();
     }
 
     private boolean isUserExist(String email) {

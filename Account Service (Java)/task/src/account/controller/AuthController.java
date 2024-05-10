@@ -1,7 +1,8 @@
 package account.controller;
 
-import account.dto.auth.request.ChangePassRequest;
+import account.dto.auth.request.ChangePassRequestDTO;
 import account.dto.auth.request.SignupRequestDTO;
+import account.dto.auth.response.ChangePassResponseDTO;
 import account.model.User;
 import account.service.auth.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,8 +36,8 @@ public class AuthController {
     }
 
     @PostMapping("/changepass")
-    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequest request, @AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
+    public ResponseEntity<Object> changepass(@RequestBody @Valid ChangePassRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
         String response = authService.changepass(request, userDetails);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new ChangePassResponseDTO(response, "The password has been updated successfully"), HttpStatus.OK);
     }
 }

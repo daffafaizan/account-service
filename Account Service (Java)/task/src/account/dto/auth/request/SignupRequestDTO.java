@@ -1,15 +1,22 @@
 package account.dto.auth.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class SignupRequest {
-    @NotNull(message = "Name field is required!")
+public class SignupRequestDTO {
+    @NotNull()
+    @NotBlank()
     private String name;
-    @NotNull(message = "Last name field is required!")
+    @NotNull()
+    @NotBlank()
     private String lastname;
-    @NotNull(message = "Email field is required!")
+    @NotNull()
+    @NotBlank()
+    @Email(regexp = "^.+@acme.com$")
     private String email;
-    @NotNull(message = "Password field is required!")
+    @NotNull()
+    @NotBlank()
     private String password;
 
     public String getName() {

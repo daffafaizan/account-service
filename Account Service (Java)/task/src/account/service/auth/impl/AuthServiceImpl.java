@@ -1,24 +1,53 @@
 package account.service.auth.impl;
 
-import account.dto.auth.request.SignupRequest;
-import account.dto.auth.response.SignupResponse;
+import account.dto.auth.request.SignupRequestDTO;
+import account.exception.auth.EmailAlreadyExistsException;
+import account.exception.auth.EmailNotFoundException;
+import account.model.User;
+import account.repository.UserRepository;
 import account.service.auth.AuthService;
-import io.micrometer.common.util.StringUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.regex.Pattern;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    Pattern emailPattern = Pattern.compile("^.+@acme.com$");
+
+    @Autowired
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
-    public SignupResponse signup(SignupRequest request) throws Exception {
+    public User signup(SignupRequestDTO request) throws JsonProcessingException {
 
-        if (StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getLastname()) || StringUtils.isEmpty(request.getEmail()) || StringUtils.isEmpty(request.getPassword()) || !emailPattern.matcher(request.getEmail()).matches() ) {
-            throw new Exception();
+        String name = request.getName();
+        String lastname = request.getLastname();
+        String email = request.getEmail().toLowerCase();
+        String password = request.getPassword();
+
+        if (isUserExist(email)) {
+            throw new EmailAlreadyExistsException();
         }
 
-        return new SignupResponse(request.getName(), request.getLastname(), request.getEmail());
+        User newUser = new User();
+        newUser.setName(name);
+        newUser.setLastname(lastname);
+        newUser.setEmail(email);
+        newUser.setPassword(passwordEncoder.encode(password));
+
+        userRepository.save(newUser);
+
+        return userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(EmailNotFoundException::new);
+    }
+
+    private boolean isUserExist(String email) {
+        return userRepository.findByEmailIgnoreCase(email).isPresent();
     }
 }

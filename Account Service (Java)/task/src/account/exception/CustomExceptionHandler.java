@@ -41,12 +41,12 @@ public class CustomExceptionHandler {
     // Authentication
     @ExceptionHandler(value = EmailAlreadyExistsException.class)
     public ResponseEntity<Object> emailAlreadyExistsExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "User exist!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = EmailNotFoundException.class)
     public ResponseEntity<Object> emailNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "User not found!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -61,28 +61,28 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = BreachedPasswordException.class)
     public ResponseEntity<Object> breachedPasswordExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The password is in the hacker's database!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = MinimumCharactersException.class)
     public ResponseEntity<Object> minimumCharactersExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Password length must be 12 chars minimum!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = SamePasswordsException.class)
     public ResponseEntity<Object> samePasswordsExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "The passwords must be different!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = CredentialsErrorException.class)
     public ResponseEntity<Object> credentialsErrorExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Wrong credentials!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     // Accountant
     @ExceptionHandler(value = GeneralUploadPayrollException.class)
     public ResponseEntity<Object> generalUploadPayrollExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "Error!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NegativeSalaryException.class)

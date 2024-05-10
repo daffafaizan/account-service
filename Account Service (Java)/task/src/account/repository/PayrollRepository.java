@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface PayrollRepository extends JpaRepository<Payroll, String> {
-    List<Payroll> findAllByEmployeeIgnoreCase(String employee);
+    List<Payroll> findAllByEmployeeIgnoreCaseOrderByPeriodDesc(String employee);
     Payroll findByEmployeeIgnoreCaseAndPeriod(String employee, YearMonth period);
 }

@@ -59,8 +59,8 @@ public class Payroll {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-    public YearMonth getPeriod() {
-        return this.period;
+    public String getPeriod() {
+        return yearMonthToString(this.period);
     }
     public void setPeriod(YearMonth period) {
         this.period = period;
@@ -77,5 +77,12 @@ public class Payroll {
         String cents = salary.remainder(divisor).toBigInteger().toString();
 
         return dollars + " dollar(s) " + cents + " cent(s)";
+    }
+    private String yearMonthToString(YearMonth yearMonth) {
+        String monthTemp = String.valueOf(yearMonth.getMonth());
+        String month = monthTemp.charAt(0) + monthTemp.substring(1).toLowerCase();
+        String year = String.valueOf(yearMonth.getYear());
+
+        return month + "-" + year;
     }
 }

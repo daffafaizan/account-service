@@ -1,5 +1,6 @@
 package account.service.empl.impl;
 
+import account.exception.acct.PeriodIsInvalidException;
 import account.model.Payroll;
 import account.repository.PayrollRepository;
 import account.service.empl.EmplService;
@@ -25,13 +26,27 @@ public class EmplServiceImpl implements EmplService {
 
     @Override
     public List<Payroll> getPayment(UserDetails details) {
-        return payrollRepository.findAllByEmployeeIgnoreCase(details.getUsername());
+        return payrollRepository.findAllByEmployeeIgnoreCaseOrderByPeriodDesc(details.getUsername());
     }
 
     @Override
     public Payroll getPaymentByPeriod(UserDetails details, String period) {
+        if (!isPeriodValid(period)) {
+            throw new PeriodIsInvalidException();
+        }
         YearMonth convertedPeriod = YearMonth.parse(period, periodFormat);
+
         return payrollRepository.findByEmployeeIgnoreCaseAndPeriod(details.getUsername(), convertedPeriod);
+    }
+
+    private boolean isPeriodValid(String period) {
+        YearMonth p;
+        try {
+            p = YearMonth.parse(period, periodFormat);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

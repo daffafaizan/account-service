@@ -67,6 +67,11 @@ public class AcctServiceImpl implements AcctService {
     @Override
     public void updatePayroll(PayrollRequestDTO request) {
         String employee = request.getEmployee();
+
+        if (!isPeriodValid(request.getPeriod())) {
+            throw new PeriodIsInvalidException();
+        }
+
         YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
         BigDecimal salary = request.getSalary();
 

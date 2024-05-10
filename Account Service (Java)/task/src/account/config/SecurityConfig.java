@@ -27,8 +27,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth  // manage access
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/changepass").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/empl/payment", "/api/empl/payment/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/acct/payments").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/acct/payments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/actuator/shutdown").permitAll()
                         .anyRequest().denyAll()
 
                 )

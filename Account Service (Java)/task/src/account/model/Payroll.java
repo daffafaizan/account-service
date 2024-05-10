@@ -1,5 +1,6 @@
 package account.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,9 +15,11 @@ import java.time.YearMonth;
 public class Payroll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Integer payrollId;
     @NotNull
     @NotBlank
+    @JsonIgnore
     private String employee;
     @NotNull
     @NotBlank

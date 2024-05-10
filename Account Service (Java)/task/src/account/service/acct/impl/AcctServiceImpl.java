@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,13 +38,10 @@ public class AcctServiceImpl implements AcctService {
         for (PayrollRequestDTO request: requests) {
             User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
                     .orElseThrow(EmailNotFoundException::new);
-            List<Payroll> payrolls = payrollRepository.findAllByEmployeeIgnoreCase(request.getEmployee());
             YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
 
-            for (Payroll payroll: payrolls) {
-                if (payroll.getEmployee().equals(request.getEmployee()) && payroll.getPeriod().equals(period)) {
-                    throw new GeneralUploadPayrollException();
-                }
+            if (isEmployeeWithPeriodExist(request.getEmployee(), period)) {
+                throw new GeneralUploadPayrollException();
             }
 
             Payroll payroll = new Payroll();
@@ -67,4 +65,9 @@ public class AcctServiceImpl implements AcctService {
         payroll.setSalary(salary);
         payrollRepository.save(payroll);
     }
+
+    private boolean isEmployeeWithPeriodExist(String employee, YearMonth period) {
+        return payrollRepository.findByEmployeeIgnoreCaseAndPeriod(employee, period) != null;
+    }
+
 }

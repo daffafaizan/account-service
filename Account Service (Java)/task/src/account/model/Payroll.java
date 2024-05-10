@@ -30,7 +30,6 @@ public class Payroll {
     private String lastname;
     @NotNull
     @DateTimeFormat(pattern = "mm-YYYY")
-    @Column(unique = true)
     private YearMonth period;
     @NotNull
     @Min(value = 0)

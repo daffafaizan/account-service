@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/changepass").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/acct/payments").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().denyAll()
 
                 )
                 .sessionManagement(sessions -> sessions

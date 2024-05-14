@@ -6,7 +6,9 @@ import account.exception.auth.*;
 import account.dto.auth.request.SignupRequestDTO;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
+import account.model.Group;
 import account.model.User;
+import account.repository.GroupRepository;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +19,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Set;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -50,6 +55,12 @@ public class AuthServiceImpl implements AuthService {
         newUser.setLastname(lastname);
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
+
+        if (userRepository.findAll().isEmpty()) {
+            updateAdministratorRole(newUser);
+        } else {
+            updateUserRole(newUser);
+        }
 
         userRepository.save(newUser);
 
@@ -101,5 +112,20 @@ public class AuthServiceImpl implements AuthService {
                 "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember"};
 
         return Arrays.asList(database).contains(newPassword);
+    }
+
+    private void updateAdministratorRole(User user) {
+        Group group = groupRepository.findByRole("Administrator");
+        user.addUserGroups(group);
+    }
+
+    private void updateAccountantRole(User user) {
+        Group group = groupRepository.findByRole("Accountant");
+        user.addUserGroups(group);
+    }
+
+    private void updateUserRole(User user) {
+        Group group = groupRepository.findByRole("User");
+        user.addUserGroups(group);
     }
 }

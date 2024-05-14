@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,8 +30,15 @@ public class User {
     @NotNull
     @NotBlank
     private String password;
-    @JsonIgnore
-    private String authority;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "user_groups",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"
+            ))
+    private Set<Group> userGroups = new HashSet<>();
 
     public Long getId() {
         return this.id;
@@ -60,10 +70,13 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getAuthority() {
-        return this.authority;
+    public Set<Group> getUserGroups() {
+        return this.userGroups;
     }
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setUserGroups(Set<Group> userGroups) {
+        this.userGroups = userGroups;
+    }
+    public void addUserGroups(Group userGroup) {
+        this.userGroups.add(userGroup);
     }
 }

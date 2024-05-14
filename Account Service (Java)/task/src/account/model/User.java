@@ -1,6 +1,7 @@
 package account.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +39,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"
             ))
+    @JsonProperty("roles")
     private Set<Group> userGroups = new HashSet<>();
 
     public Long getId() {

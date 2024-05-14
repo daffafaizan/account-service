@@ -57,9 +57,9 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
 
         if (userRepository.findAll().isEmpty()) {
-            updateAdministratorRole(newUser);
+            updateRole(newUser, "ADMINISTRATOR");
         } else {
-            updateUserRole(newUser);
+            updateRole(newUser, "USER");
         }
 
         userRepository.save(newUser);
@@ -114,18 +114,20 @@ public class AuthServiceImpl implements AuthService {
         return Arrays.asList(database).contains(newPassword);
     }
 
-    private void updateAdministratorRole(User user) {
-        Group group = groupRepository.findByRole("Administrator");
-        user.addUserGroups(group);
-    }
-
-    private void updateAccountantRole(User user) {
-        Group group = groupRepository.findByRole("Accountant");
-        user.addUserGroups(group);
-    }
-
-    private void updateUserRole(User user) {
-        Group group = groupRepository.findByRole("User");
-        user.addUserGroups(group);
+    private void updateRole(User user, String role) {
+        switch (role) {
+            case "ADMINISTRATOR" -> {
+                Group group = groupRepository.findByRole("ROLE_ADMINISTRATOR");
+                user.addUserGroups(group);
+            }
+            case "BUSINESS" -> {
+                Group group = groupRepository.findByRole("ROLE_BUSINESS");
+                user.addUserGroups(group);
+            }
+            case "USER" -> {
+                Group group = groupRepository.findByRole("ROLE_USER");
+                user.addUserGroups(group);
+            }
+        }
     }
 }

@@ -16,16 +16,18 @@ public class Group {
     @ManyToMany(mappedBy = "userGroups")
     private Set<User> users;
 
+    public Group() {}
+
     public Group(String type, String role) {
         this.type = type;
         this.role = role;
     }
 
     public String getRole() {
-        return role;
+        return this.role;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Fetch;
+import org.springframework.data.repository.cdi.Eager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,11 +36,12 @@ public class User {
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
-    })
+    },
+    fetch = FetchType.EAGER)
     @JoinTable(name = "user_groups",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"
-            ))
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
     @JsonProperty("roles")
     private Set<Group> userGroups = new HashSet<>();
 

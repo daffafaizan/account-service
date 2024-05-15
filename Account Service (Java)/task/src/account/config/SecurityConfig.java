@@ -27,10 +27,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth  // manage access
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/changepass").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/empl/payment", "/api/empl/payment/**").hasAnyAuthority("Accountant", "User")
-                        .requestMatchers(HttpMethod.POST, "/api/acct/payments").hasAuthority("Accountant")
-                        .requestMatchers(HttpMethod.PUT, "/api/acct/payments").hasAuthority("Accountant")
-                        .requestMatchers(HttpMethod.POST, "/actuator/shutdown").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/empl/payment", "/api/empl/payment/**").hasAnyRole("ACCOUNTANT", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/acct/payments").hasRole("ACCOUNTANT")
+                        .requestMatchers(HttpMethod.PUT, "/api/acct/payments").hasRole("ACCOUNTANT")
+                        .requestMatchers(HttpMethod.GET, "/api/admin/user").hasRole("ADMINISTRATOR")
+                        .requestMatchers(HttpMethod.POST, "/actuator/shutdown", "/error/**").permitAll()
                         .anyRequest().denyAll()
 
                 )

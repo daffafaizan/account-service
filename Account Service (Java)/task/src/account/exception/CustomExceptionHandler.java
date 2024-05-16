@@ -38,6 +38,13 @@ public class CustomExceptionHandler {
         return response;
     }
 
+    // Authentication
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> methodArgumentNotValidExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<Object> runtimeExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);

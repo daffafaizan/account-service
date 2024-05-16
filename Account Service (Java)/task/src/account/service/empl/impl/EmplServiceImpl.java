@@ -4,7 +4,6 @@ import account.exception.auth.EmailNotFoundException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.empl.EmplService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class EmplServiceImpl implements EmplService {
     }
 
     @Override
-    public User getPayment(UserDetails details) throws JsonProcessingException {
+    public User getPayment(UserDetails details) {
         String email = details.getUsername();
 
         return userRepository.findByEmailIgnoreCase(email)

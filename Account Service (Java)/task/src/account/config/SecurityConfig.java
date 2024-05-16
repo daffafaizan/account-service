@@ -14,10 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final int strength = 15;
 
     @Bean
+    @Autowired
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .httpBasic(Customizer.withDefaults()) // Default Basic auth config
@@ -26,7 +27,9 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions().disable()) // For the H2 console
                 .authorizeHttpRequests(auth -> auth  // manage access
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/changepass").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/empl/payment").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/actuator/shutdown").permitAll()
                         .anyRequest().denyAll()
 
                 )
@@ -39,6 +42,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(strength);
     }
 }

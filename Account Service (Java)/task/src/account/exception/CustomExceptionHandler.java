@@ -1,10 +1,10 @@
 package account.exception;
 
-import account.exception.auth.EmailAlreadyExistsException;
-import account.exception.auth.EmailNotFoundException;
+import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,18 +35,8 @@ public class CustomExceptionHandler {
         return response;
     }
 
-    @ExceptionHandler(value = EmailAlreadyExistsException.class)
-    public ResponseEntity<Object> emailAlreadyExistsExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "User exist!"), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = EmailNotFoundException.class)
-    public ResponseEntity<Object> emailNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, "User not found!"), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> methodArgumentNotValidExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<Object> runtimeExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

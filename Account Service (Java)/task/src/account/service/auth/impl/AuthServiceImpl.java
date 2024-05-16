@@ -119,8 +119,8 @@ public class AuthServiceImpl implements AuthService {
                 Group group = groupRepository.findByRole("ROLE_ADMINISTRATOR");
                 user.addUserGroups(group);
             }
-            case "BUSINESS" -> {
-                Group group = groupRepository.findByRole("ROLE_BUSINESS");
+            case "ACCOUNTANT" -> {
+                Group group = groupRepository.findByRole("ROLE_ACCOUNTANT");
                 user.addUserGroups(group);
             }
             case "USER" -> {

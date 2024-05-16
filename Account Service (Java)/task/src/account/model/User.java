@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.Fetch;
-import org.springframework.data.repository.cdi.Eager;
 
 import java.util.HashSet;
 import java.util.Set;

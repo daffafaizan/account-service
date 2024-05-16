@@ -5,6 +5,7 @@ import account.exception.acct.NegativeSalaryException;
 import account.exception.acct.PeriodIsInvalidException;
 import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;

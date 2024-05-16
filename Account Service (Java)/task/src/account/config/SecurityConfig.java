@@ -14,10 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final int strength = 15;
 
     @Bean
+    @Autowired
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .httpBasic(Customizer.withDefaults()) // Default Basic auth config
@@ -43,6 +44,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(15);
+        return new BCryptPasswordEncoder(strength);
     }
 }

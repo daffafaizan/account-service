@@ -38,60 +38,8 @@ public class CustomExceptionHandler {
         return response;
     }
 
-    // Authentication
-    @ExceptionHandler(value = EmailAlreadyExistsException.class)
-    public ResponseEntity<Object> emailAlreadyExistsExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = EmailNotFoundException.class)
-    public ResponseEntity<Object> emailNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> methodArgumentNotValidExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> HttpMessageNotReadableExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = BreachedPasswordException.class)
-    public ResponseEntity<Object> breachedPasswordExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = MinimumCharactersException.class)
-    public ResponseEntity<Object> minimumCharactersExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = SamePasswordsException.class)
-    public ResponseEntity<Object> samePasswordsExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = CredentialsErrorException.class)
-    public ResponseEntity<Object> credentialsErrorExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    // Accountant
-    @ExceptionHandler(value = GeneralUploadPayrollException.class)
-    public ResponseEntity<Object> generalUploadPayrollExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = NegativeSalaryException.class)
-    public ResponseEntity<Object> negativeSalaryExceptionHandler(Exception exception, HttpServletRequest request) {
-        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = PeriodIsInvalidException.class)
-    public ResponseEntity<Object> periodIsInvalidExceptionHandler(Exception exception, HttpServletRequest request) {
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<Object> runtimeExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

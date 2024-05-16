@@ -1,12 +1,14 @@
 package account.controller;
 
 import account.dto.admin.response.DeleteUserResponseDTO;
-import account.dto.admin.response.GetUserResponseDTO;
+import account.dto.admin.response.GetUsersResponseDTO;
 import account.model.User;
 import account.service.admin.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,18 +28,18 @@ public class AdminController {
     @GetMapping("/user")
     public ResponseEntity<Object> getUsers() {
         List<User> users = adminService.getUsers();
-        List<GetUserResponseDTO> response = new ArrayList<>();
+        List<GetUsersResponseDTO> response = new ArrayList<>();
 
         for (User user : users) {
-            response.add(new GetUserResponseDTO(user));
+            response.add(new GetUsersResponseDTO(user));
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/user/{email}")
-    public ResponseEntity<Object> deleteUser(@PathVariable String email) {
-        adminService.deleteUser(email);
+    public ResponseEntity<Object> deleteUser(@PathVariable String email, @AuthenticationPrincipal UserDetails userDetails) {
+        adminService.deleteUser(email, userDetails);
         return new ResponseEntity<>(new DeleteUserResponseDTO(email, "Deleted successfully!"), HttpStatus.OK);
     }
 }

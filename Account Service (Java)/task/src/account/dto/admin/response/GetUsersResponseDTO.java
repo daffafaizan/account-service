@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Set;
 
 
-public class GetUserResponseDTO {
+public class GetUsersResponseDTO {
     private final Long id;
     private final String name;
     private final String lastname;
     private final String email;
     private final List<String> roles;
 
-    public GetUserResponseDTO(User user) {
+    public GetUsersResponseDTO(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.lastname = user.getLastname();

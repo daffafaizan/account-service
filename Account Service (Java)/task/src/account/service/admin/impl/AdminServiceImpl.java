@@ -1,11 +1,13 @@
 package account.service.admin.impl;
 
 import account.exception.auth.EmailNotFoundException;
+import account.exception.auth.RemoveAdministratorException;
 import account.model.User;
 import account.repository.UserRepository;
 import account.service.admin.AdminService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void deleteUser(String email) {
+    public void deleteUser(String email, UserDetails userDetails) {
+        if (userDetails.getUsername().equals(email)) {
+            throw new RemoveAdministratorException();
+        }
         if (userRepository.findByEmailIgnoreCase(email).isEmpty()) {
             throw new EmailNotFoundException();
         }

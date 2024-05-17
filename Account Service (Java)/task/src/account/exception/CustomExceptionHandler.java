@@ -1,5 +1,7 @@
 package account.exception;
 
+import account.exception.admin.RoleNotFoundException;
+import account.exception.auth.EmailNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,6 @@ public class CustomExceptionHandler {
         return response;
     }
 
-    // Authentication
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<Object> runtimeExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, exception.getMessage()), HttpStatus.BAD_REQUEST);
@@ -44,4 +45,8 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = {EmailNotFoundException.class, RoleNotFoundException.class})
+    public ResponseEntity<Object> emailNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.NOT_FOUND, request, exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
 }

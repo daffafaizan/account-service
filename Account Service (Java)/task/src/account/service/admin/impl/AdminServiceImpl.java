@@ -1,8 +1,11 @@
 package account.service.admin.impl;
 
+import account.dto.admin.request.ChangeRoleRequestDTO;
+import account.exception.admin.*;
 import account.exception.auth.EmailNotFoundException;
-import account.exception.auth.RemoveAdministratorException;
+import account.model.Group;
 import account.model.User;
+import account.repository.GroupRepository;
 import account.repository.UserRepository;
 import account.service.admin.AdminService;
 import jakarta.transaction.Transactional;
@@ -10,16 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository) {
+    public AdminServiceImpl(UserRepository userRepository, GroupRepository groupRepository) {
         this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -37,5 +44,95 @@ public class AdminServiceImpl implements AdminService {
             throw new EmailNotFoundException();
         }
         userRepository.deleteByEmailIgnoreCase(email);
+    }
+
+    @Override
+    @Transactional
+    public User changeUserRole(ChangeRoleRequestDTO request) {
+        String email = request.getUser();
+        String role = request.getRole();
+        String operation = request.getOperation();
+
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(EmailNotFoundException::new);
+
+        List<String> currentRoles = getCurrentRoles(user);
+
+        if (operation.equals("GRANT")) {
+            if (currentRoles.contains("ROLE_ADMINISTRATOR") && (role.equals("USER") || role.equals("ACCOUNTANT"))) {
+                throw new InvalidRoleCombination();
+            } else if ((currentRoles.contains("ROLE_USER") || currentRoles.contains("ACCOUNTANT")) && role.equals("ADMINISTRATOR")) {
+                throw new InvalidRoleCombination();
+            } else {
+                grantRole(user, role);
+            }
+        } else if (operation.equals("REMOVE")) {
+            if (currentRoles.contains(String.format("ROLE_%s", role))) {
+                if (role.equals("ADMINISTRATOR")) {
+                    throw new RemoveAdministratorException();
+                } else if (currentRoles.size() == 1) {
+                    throw new UserMinimumOneRole();
+                } else {
+                    removeRole(user, role);
+                }
+            } else {
+                throw new UserDoesNotHaveRoleException();
+            }
+        }
+
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public List<String> getCurrentRoles(User user) {
+        Iterator<Group> iterator = user.getUserGroups().iterator();
+        List<String> roles = new ArrayList<>();
+
+        while(iterator.hasNext()) {
+            roles.add(iterator.next().getRole());
+        }
+
+        return roles;
+    }
+
+    private void removeRole(User user, String role) {
+        switch (role) {
+            case "ADMINISTRATOR" -> {
+                Group group = groupRepository.findByRole("ROLE_ADMINISTRATOR");
+                user.removeUserGroup(group);
+            }
+            case "ACCOUNTANT" -> {
+                Group group = groupRepository.findByRole("ROLE_ACCOUNTANT");
+                user.removeUserGroup(group);
+            }
+            case "USER" -> {
+                Group group = groupRepository.findByRole("ROLE_USER");
+                user.removeUserGroup(group);
+            }
+            default -> {
+                throw new RoleNotFoundException();
+            }
+        }
+    }
+
+    private void grantRole(User user, String role) {
+        switch (role) {
+            case "ADMINISTRATOR" -> {
+                Group group = groupRepository.findByRole("ROLE_ADMINISTRATOR");
+                user.addUserGroups(group);
+            }
+            case "ACCOUNTANT" -> {
+                Group group = groupRepository.findByRole("ROLE_ACCOUNTANT");
+                user.addUserGroups(group);
+            }
+            case "USER" -> {
+                Group group = groupRepository.findByRole("ROLE_USER");
+                user.addUserGroups(group);
+            }
+            default -> {
+                throw new RoleNotFoundException();
+            }
+        }
     }
 }

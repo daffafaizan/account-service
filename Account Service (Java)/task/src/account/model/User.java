@@ -79,7 +79,10 @@ public class User {
     public void setUserGroups(Set<Group> userGroups) {
         this.userGroups = userGroups;
     }
-    public void addUserGroups(Group userGroup) {
-        this.userGroups.add(userGroup);
+    public void addUserGroups(Group group) {
+        this.userGroups.add(group);
+    }
+    public void removeUserGroup(Group group) {
+        this.userGroups.remove(group);
     }
 }

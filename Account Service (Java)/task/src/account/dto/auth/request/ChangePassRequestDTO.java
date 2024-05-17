@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class ChangePassRequestDTO {
-    @NotNull
-    @NotBlank
     private String new_password;
 
     public String getNew_password() {

@@ -9,16 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 
 public class PayrollRequestDTO {
-    @NotNull
-    @NotBlank
     private String employee;
-    @NotNull
-    @NotBlank
-    @DateTimeFormat(pattern = "mm-YYYY")
-    @Column(unique = true)
     private String period;
-    @NotNull
-    @Min(value = 0)
     private BigDecimal salary;
 
     public String getEmployee() {

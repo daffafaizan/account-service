@@ -37,8 +37,6 @@ public class AcctServiceImpl implements AcctService {
     @Transactional
     public void uploadPayrolls(List<PayrollRequestDTO> requests) {
         for (PayrollRequestDTO request: requests) {
-            User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
-                    .orElseThrow(EmailNotFoundException::new);
 
             if (!isPeriodValid(request.getPeriod())) {
                 throw new PeriodIsInvalidException();
@@ -52,6 +50,9 @@ public class AcctServiceImpl implements AcctService {
             if (isEmployeeWithPeriodExist(request.getEmployee(), period)) {
                 throw new GeneralUploadPayrollException();
             }
+
+            User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
+                    .orElseThrow(EmailNotFoundException::new);
 
             Payroll payroll = new Payroll();
 

@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/empl/payment", "/api/empl/payment/**").hasAnyRole("ACCOUNTANT", "USER")
                         .requestMatchers("/api/acct/**").hasRole("ACCOUNTANT")
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRATOR")
+                        .requestMatchers("/api/security/**").hasRole("AUDITOR")
                         .requestMatchers(HttpMethod.POST, "/actuator/shutdown", "/error/**").permitAll()
                         .anyRequest().permitAll()
 

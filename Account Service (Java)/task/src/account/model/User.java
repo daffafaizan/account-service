@@ -42,6 +42,8 @@ public class User {
     )
     @JsonProperty("roles")
     private Set<Group> userGroups = new HashSet<>();
+    @JsonIgnore
+    private Boolean isLocked;
 
     public Long getId() {
         return this.id;
@@ -84,5 +86,11 @@ public class User {
     }
     public void removeUserGroup(Group group) {
         this.userGroups.remove(group);
+    }
+    public Boolean getIsLocked() {
+        return this.isLocked;
+    }
+    public void setIsLocked(Boolean isLocked) {
+        this.isLocked = isLocked;
     }
 }

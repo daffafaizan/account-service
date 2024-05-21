@@ -19,7 +19,7 @@ public class Log {
     private Date date;
     @NotNull
     @NotBlank
-    private String action;
+    private Event action;
     @NotNull
     @NotBlank
     private String subject;
@@ -42,10 +42,10 @@ public class Log {
     public void setDate(Date date) {
         this.date = date;
     }
-    public String getAction() {
+    public Event getAction() {
         return action;
     }
-    public void setAction(String action) {
+    public void setAction(Event action) {
         this.action = action;
     }
     public String getSubject() {

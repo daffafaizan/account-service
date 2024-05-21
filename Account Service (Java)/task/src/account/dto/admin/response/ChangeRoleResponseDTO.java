@@ -3,10 +3,7 @@ package account.dto.admin.response;
 import account.model.Group;
 import account.model.User;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ChangeRoleResponseDTO {
     private final Long id;
@@ -30,6 +27,8 @@ public class ChangeRoleResponseDTO {
         while(iterator.hasNext()) {
             roles.add(iterator.next().getRole());
         }
+
+        Collections.sort(roles);
 
         return roles;
     }

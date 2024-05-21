@@ -3,10 +3,7 @@ package account.dto.admin.response;
 import account.model.Group;
 import account.model.User;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class GetUsersResponseDTO {
@@ -31,6 +28,8 @@ public class GetUsersResponseDTO {
         while(iterator.hasNext()) {
             roles.add(iterator.next().getRole());
         }
+
+        Collections.sort(roles);
 
         return roles;
     }

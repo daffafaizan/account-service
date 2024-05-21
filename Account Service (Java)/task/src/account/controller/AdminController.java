@@ -1,6 +1,8 @@
 package account.controller;
 
+import account.dto.admin.request.AccessRequestDTO;
 import account.dto.admin.request.ChangeRoleRequestDTO;
+import account.dto.admin.response.AccessResponseDTO;
 import account.dto.admin.response.ChangeRoleResponseDTO;
 import account.dto.admin.response.DeleteUserResponseDTO;
 import account.dto.admin.response.GetUsersResponseDTO;
@@ -50,5 +52,11 @@ public class AdminController {
     public ResponseEntity<Object> updateUserRole(@RequestBody @Valid ChangeRoleRequestDTO request) {
         User response = adminService.changeUserRole(request);
         return new ResponseEntity<>(new ChangeRoleResponseDTO(response), HttpStatus.OK);
+    }
+
+    @PutMapping("/user/access")
+    public ResponseEntity<Object> changeAccess(@RequestBody @Valid AccessRequestDTO request) {
+        String response = adminService.changeAccess(request);
+        return new ResponseEntity<>(new AccessResponseDTO(response, request.getOperation()), HttpStatus.OK);
     }
 }

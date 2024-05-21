@@ -1,5 +1,6 @@
 package account.service.admin.impl;
 
+import account.dto.admin.request.AccessRequestDTO;
 import account.dto.admin.request.ChangeRoleRequestDTO;
 import account.exception.admin.*;
 import account.exception.auth.EmailNotFoundException;
@@ -83,6 +84,20 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
 
         return user;
+    }
+
+    @Override
+    public String changeAccess(AccessRequestDTO request) {
+        User user = userRepository.findByEmailIgnoreCase(request.getUser())
+                .orElseThrow(EmailNotFoundException::new);
+
+        if (request.getOperation().equals("LOCK")) {
+            user.setIsLocked(true);
+        } else if (request.getOperation().equals("UNLOCK")) {
+            user.setIsLocked(false);
+        }
+
+        return user.getEmail();
     }
 
     public List<String> getCurrentRoles(User user) {

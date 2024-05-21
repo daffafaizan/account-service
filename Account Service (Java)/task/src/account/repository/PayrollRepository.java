@@ -8,7 +8,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 @Repository
-public interface PayrollRepository extends JpaRepository<Payroll, String> {
+public interface PayrollRepository extends JpaRepository<Payroll, Long> {
     List<Payroll> findAllByEmployeeIgnoreCaseOrderByPeriodDesc(String employee);
     Payroll findByEmployeeIgnoreCaseAndPeriod(String employee, YearMonth period);
 }

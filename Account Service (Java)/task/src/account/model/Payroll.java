@@ -17,7 +17,7 @@ public class Payroll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Integer payrollId;
+    private Long id;
     @NotNull
     @NotBlank
     @JsonIgnore
@@ -35,11 +35,11 @@ public class Payroll {
     @Min(value = 0)
     private BigDecimal salary;
 
-    public Integer getPayrollId() {
-        return this.payrollId;
+    public Long getPayrollId() {
+        return this.id;
     }
-    public void setPayrollId(Integer payrollId) {
-        this.payrollId = payrollId;
+    public void setPayrollId(Long id) {
+        this.id = id;
     }
     public String getEmployee() {
         return this.employee;

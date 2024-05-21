@@ -28,7 +28,7 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user/")
     public ResponseEntity<Object> getUsers() {
         List<User> users = adminService.getUsers();
         List<GetUsersResponseDTO> response = new ArrayList<>();

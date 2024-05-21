@@ -17,11 +17,12 @@ public class Payroll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Integer payrollId;
+    private Long id;
     @NotNull
-    @NotBlank
     @JsonIgnore
-    private String employee;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "users_id")
+    private User employee;
     @NotNull
     @NotBlank
     private String name;
@@ -35,16 +36,16 @@ public class Payroll {
     @Min(value = 0)
     private BigDecimal salary;
 
-    public Integer getPayrollId() {
-        return this.payrollId;
+    public Long getId() {
+        return this.id;
     }
-    public void setPayrollId(Integer payrollId) {
-        this.payrollId = payrollId;
+    public void setId(Long id) {
+        this.id = id;
     }
-    public String getEmployee() {
+    public User getEmployee() {
         return this.employee;
     }
-    public void setEmployee(String employee) {
+    public void setEmployee(User employee) {
         this.employee = employee;
     }
     public String getName() {

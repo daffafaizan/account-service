@@ -35,10 +35,10 @@ public class Payroll {
     @Min(value = 0)
     private BigDecimal salary;
 
-    public Long getPayrollId() {
+    public Long getId() {
         return this.id;
     }
-    public void setPayrollId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getEmployee() {

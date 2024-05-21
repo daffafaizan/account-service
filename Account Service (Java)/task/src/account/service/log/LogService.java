@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface LogService {
     List<Log> getLogs();
-    void createLog(Event action, String subject, String object, String path);
+    void createLog(String action, String subject, String object, String path);
 }

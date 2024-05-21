@@ -27,7 +27,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public void createLog(Event action, String subject, String object, String path) {
+    public void createLog(String action, String subject, String object, String path) {
         Log log = new Log();
         LocalDateTime date = LocalDateTime.now();
 

@@ -4,13 +4,18 @@ import account.dto.admin.request.AccessRequestDTO;
 import account.dto.admin.request.ChangeRoleRequestDTO;
 import account.exception.admin.*;
 import account.exception.auth.EmailNotFoundException;
+import account.model.Event;
 import account.model.Group;
 import account.model.User;
 import account.repository.GroupRepository;
 import account.repository.UserRepository;
 import account.service.admin.AdminService;
+import account.service.log.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +28,17 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
+    private final LogService logService;
+    private final Authentication auth;
+    private final HttpServletRequest request;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, GroupRepository groupRepository) {
+    public AdminServiceImpl(UserRepository userRepository, GroupRepository groupRepository, LogService logService, HttpServletRequest request) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        this.logService = logService;
+        this.auth = SecurityContextHolder.getContext().getAuthentication();
+        this.request = request;
     }
 
     @Override
@@ -45,6 +56,12 @@ public class AdminServiceImpl implements AdminService {
             throw new EmailNotFoundException();
         }
         userRepository.deleteByEmailIgnoreCase(email);
+        logService.createLog(
+                Event.DELETE_USER.name(),
+                auth.getName(),
+                email,
+                this.request.getRequestURI()
+        );
     }
 
     @Override
@@ -66,6 +83,12 @@ public class AdminServiceImpl implements AdminService {
                 throw new InvalidRoleCombination();
             } else {
                 grantRole(user, role);
+                logService.createLog(
+                        Event.GRANT_ROLE.name(),
+                        auth.getName(),
+                        user.getEmail(),
+                        this.request.getRequestURI()
+                );
             }
         } else if (operation.equals("REMOVE")) {
             if (currentRoles.contains(String.format("ROLE_%s", role))) {
@@ -75,6 +98,12 @@ public class AdminServiceImpl implements AdminService {
                     throw new UserMinimumOneRole();
                 } else {
                     removeRole(user, role);
+                    logService.createLog(
+                            Event.REMOVE_ROLE.name(),
+                            auth.getName(),
+                            user.getEmail(),
+                            this.request.getRequestURI()
+                    );
                 }
             } else {
                 throw new UserDoesNotHaveRoleException();
@@ -97,8 +126,20 @@ public class AdminServiceImpl implements AdminService {
 
         if (request.getOperation().equals("LOCK")) {
             user.setIsLocked(true);
+            logService.createLog(
+                    Event.LOCK_USER.name(),
+                    auth.getName(),
+                    "Lock user " + user.getEmail(),
+                    this.request.getRequestURI()
+            );
         } else if (request.getOperation().equals("UNLOCK")) {
             user.setIsLocked(false);
+            logService.createLog(
+                    Event.UNLOCK_USER.name(),
+                    auth.getName(),
+                    "Unlock user " + user.getEmail(),
+                    this.request.getRequestURI()
+            );
         }
 
         return user.getEmail();

@@ -91,6 +91,10 @@ public class AdminServiceImpl implements AdminService {
         User user = userRepository.findByEmailIgnoreCase(request.getUser())
                 .orElseThrow(EmailNotFoundException::new);
 
+        if (isRole(user, "ROLE_ADMINISTRATOR")) {
+            throw new LockAdministratorException();
+        }
+
         if (request.getOperation().equals("LOCK")) {
             user.setIsLocked(true);
         } else if (request.getOperation().equals("UNLOCK")) {
@@ -109,6 +113,10 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return roles;
+    }
+
+    private Boolean isRole(User user, String role) {
+        return user.getUserGroups().contains(groupRepository.findByRole(role));
     }
 
     private void removeRole(User user, String role) {

@@ -1,7 +1,7 @@
 package account.controller;
 
 import account.model.Log;
-import account.service.security.SecurityService;
+import account.service.log.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +15,16 @@ import java.util.List;
 @RequestMapping("/api/security")
 public class SecurityController {
 
-    private final SecurityService securityService;
+    private final LogService logService;
 
     @Autowired
-    public SecurityController(SecurityService securityService) {
-        this.securityService = securityService;
+    public SecurityController(LogService logService) {
+        this.logService = logService;
     }
 
     @GetMapping("/")
     public ResponseEntity<Object> getLogs() {
-        List<Log> response = securityService.getLogs();
+        List<Log> response = logService.getLogs();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

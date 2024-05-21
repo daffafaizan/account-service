@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,7 +17,7 @@ public class Log {
     private Long id;
     @NotNull
     @NotBlank
-    private Date date;
+    private LocalDateTime date;
     @NotNull
     @NotBlank
     private Event action;
@@ -36,10 +37,10 @@ public class Log {
     public void setId(Long id) {
         this.id = id;
     }
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
     public Event getAction() {

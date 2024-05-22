@@ -6,11 +6,14 @@ import account.exception.auth.*;
 import account.dto.auth.request.SignupRequestDTO;
 import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
+import account.model.Event;
 import account.model.Group;
 import account.model.User;
 import account.repository.GroupRepository;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
+import account.service.log.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,12 +29,18 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LogService logService;
+    private final Authentication auth;
+    private final HttpServletRequest request;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, LogService logService, HttpServletRequest request) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.passwordEncoder = passwordEncoder;
+        this.logService = logService;
+        this.auth = SecurityContextHolder.getContext().getAuthentication();
+        this.request = request;
     }
 
     @Override
@@ -62,6 +71,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         userRepository.save(newUser);
+        logService.createLog(
+                Event.CREATE_USER.name(),
+                "Anonymous",
+                email,
+                this.request.getRequestURI()
+        );
 
         return userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(EmailNotFoundException::new);
@@ -71,7 +86,6 @@ public class AuthServiceImpl implements AuthService {
     public String changepass(ChangePassRequestDTO request, UserDetails userDetails) {
         String newPassword = request.getNew_password();
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             throw new CredentialsErrorException();
         }
@@ -93,6 +107,12 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+        logService.createLog(
+                Event.CHANGE_PASSWORD.name(),
+                auth.getName(),
+                email,
+                this.request.getRequestURI()
+        );
 
         return user.getEmail();
     }

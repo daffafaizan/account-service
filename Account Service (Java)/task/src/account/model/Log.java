@@ -13,22 +13,12 @@ import java.util.Date;
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
-    @NotNull
-    @NotBlank
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime date;
-    @NotNull
-    @NotBlank
     private String action;
-    @NotNull
-    @NotBlank
     private String subject;
-    @NotNull
-    @NotBlank
     private String object;
-    @NotNull
-    @NotBlank
     private String path;
 
     public Long getId() {

@@ -6,6 +6,7 @@ import account.repository.LogRepository;
 import account.service.log.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<Log> getLogs() {
-        return logRepository.findAllOrderByIdAsc();
+        return logRepository.findAllByOrderByIdAsc();
     }
 
     @Override

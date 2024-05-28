@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -44,6 +45,8 @@ public class User {
     private Set<Group> userGroups = new HashSet<>();
     @JsonIgnore
     private Boolean isLocked;
+    @JsonIgnore
+    private Integer loginAttempts;
 
     public Long getId() {
         return this.id;
@@ -92,5 +95,11 @@ public class User {
     }
     public void setIsLocked(Boolean isLocked) {
         this.isLocked = isLocked;
+    }
+    public Integer getLoginAttempts() {
+        return this.loginAttempts;
+    }
+    public void setLoginAttempts(Integer loginAttempts) {
+        this.loginAttempts = loginAttempts;
     }
 }

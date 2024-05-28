@@ -8,8 +8,10 @@ import account.exception.auth.EmailAlreadyExistsException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.Event;
 import account.model.Group;
+import account.model.Log;
 import account.model.User;
 import account.repository.GroupRepository;
+import account.repository.LogRepository;
 import account.repository.UserRepository;
 import account.service.auth.AuthService;
 import account.service.log.LogService;
@@ -20,7 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
@@ -28,21 +32,24 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
+    private final LogRepository logRepository;
     private final PasswordEncoder passwordEncoder;
     private final LogService logService;
     private final Authentication auth;
     private final HttpServletRequest request;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, LogService logService, HttpServletRequest request) {
+    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, LogRepository logRepository, PasswordEncoder passwordEncoder, LogService logService, HttpServletRequest request) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        this.logRepository = logRepository;
         this.passwordEncoder = passwordEncoder;
         this.logService = logService;
         this.auth = SecurityContextHolder.getContext().getAuthentication();
         this.request = request;
     }
 
+    @Transactional
     @Override
     public User signup(SignupRequestDTO request) {
 
@@ -63,6 +70,8 @@ public class AuthServiceImpl implements AuthService {
         newUser.setLastname(lastname);
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setIsLocked(false);
+        newUser.setLoginAttempts(0);
 
         if (userRepository.findAll().isEmpty()) {
             updateRole(newUser, "ADMINISTRATOR");

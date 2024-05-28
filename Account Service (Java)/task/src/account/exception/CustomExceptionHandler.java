@@ -5,6 +5,7 @@ import account.exception.auth.EmailNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +48,11 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = {EmailNotFoundException.class, RoleNotFoundException.class})
     public ResponseEntity<Object> emailNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.NOT_FOUND, request, exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ResponseEntity<Object> usernameNotFoundExceptionHandler(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(customExceptionResponse(HttpStatus.NOT_FOUND, request, exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

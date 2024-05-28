@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -19,7 +20,7 @@ public class SecurityConfig {
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
-    AccessDeniedHandler customAccessDeniedHandler;
+    CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRATOR")
                         .requestMatchers("/api/security/**").hasRole("AUDITOR")
                         .requestMatchers(HttpMethod.POST, "/actuator/shutdown", "/error/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
 
                 )
                 .sessionManagement(sessions -> sessions

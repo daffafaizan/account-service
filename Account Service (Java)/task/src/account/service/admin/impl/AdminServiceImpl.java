@@ -29,7 +29,6 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final LogService logService;
-    private final Authentication auth;
     private final HttpServletRequest request;
 
     @Autowired
@@ -37,7 +36,6 @@ public class AdminServiceImpl implements AdminService {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.logService = logService;
-        this.auth = SecurityContextHolder.getContext().getAuthentication();
         this.request = request;
     }
 
@@ -49,6 +47,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public void deleteUser(String email, UserDetails userDetails) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userDetails.getUsername().equals(email)) {
             throw new RemoveAdministratorException();
         }
@@ -67,6 +66,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public User changeUserRole(ChangeRoleRequestDTO request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = request.getUser();
         String role = request.getRole();
         String operation = request.getOperation();
@@ -77,18 +77,23 @@ public class AdminServiceImpl implements AdminService {
         List<String> currentRoles = getCurrentRoles(user);
 
         if (operation.equals("GRANT")) {
-            if (currentRoles.contains("ROLE_ADMINISTRATOR") && (role.equals("USER") || role.equals("ACCOUNTANT"))) {
+            if (currentRoles.contains("ROLE_ADMINISTRATOR") && (role.equals("USER") || role.equals("ACCOUNTANT") || role.equals("AUDITOR"))) {
                 throw new InvalidRoleCombination();
-            } else if ((currentRoles.contains("ROLE_USER") || currentRoles.contains("ACCOUNTANT")) && role.equals("ADMINISTRATOR")) {
+            } else if ((currentRoles.contains("ROLE_USER") || currentRoles.contains("ACCOUNTANT") || currentRoles.contains("AUDITOR")) && role.equals("ADMINISTRATOR")) {
                 throw new InvalidRoleCombination();
             } else {
                 grantRole(user, role);
                 logService.createLog(
                         Event.GRANT_ROLE.name(),
                         auth.getName(),
-                        user.getEmail(),
+                        "Grant role " + role + " to " + user.getEmail(),
                         this.request.getRequestURI()
                 );
+                if (role.equals("ADMINISTRATOR")) {
+                    user.setIsLocked(false);
+                    user.setLoginAttempts(0);
+                    userRepository.save(user);
+                }
             }
         } else if (operation.equals("REMOVE")) {
             if (currentRoles.contains(String.format("ROLE_%s", role))) {
@@ -101,7 +106,7 @@ public class AdminServiceImpl implements AdminService {
                     logService.createLog(
                             Event.REMOVE_ROLE.name(),
                             auth.getName(),
-                            user.getEmail(),
+                            "Remove role " + role + " from " + user.getEmail(),
                             this.request.getRequestURI()
                     );
                 }
@@ -117,10 +122,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String changeAccess(AccessRequestDTO request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmailIgnoreCase(request.getUser())
                 .orElseThrow(EmailNotFoundException::new);
 
-        if (isRole(user, "ROLE_ADMINISTRATOR")) {
+        if (user.getUserGroups().contains(groupRepository.findByRole("ROLE_ADMINISTRATOR"))) {
             throw new LockAdministratorException();
         }
 
@@ -132,6 +138,7 @@ public class AdminServiceImpl implements AdminService {
                     "Lock user " + user.getEmail(),
                     this.request.getRequestURI()
             );
+            userRepository.save(user);
         } else if (request.getOperation().equals("UNLOCK")) {
             user.setIsLocked(false);
             logService.createLog(
@@ -140,6 +147,7 @@ public class AdminServiceImpl implements AdminService {
                     "Unlock user " + user.getEmail(),
                     this.request.getRequestURI()
             );
+            userRepository.save(user);
         }
 
         return user.getEmail();
@@ -156,10 +164,6 @@ public class AdminServiceImpl implements AdminService {
         return roles;
     }
 
-    private Boolean isRole(User user, String role) {
-        return user.getUserGroups().contains(groupRepository.findByRole(role));
-    }
-
     private void removeRole(User user, String role) {
         switch (role) {
             case "ADMINISTRATOR" -> {
@@ -172,6 +176,10 @@ public class AdminServiceImpl implements AdminService {
             }
             case "USER" -> {
                 Group group = groupRepository.findByRole("ROLE_USER");
+                user.removeUserGroup(group);
+            }
+            case "AUDITOR" -> {
+                Group group = groupRepository.findByRole("ROLE_AUDITOR");
                 user.removeUserGroup(group);
             }
             default -> {
@@ -192,6 +200,10 @@ public class AdminServiceImpl implements AdminService {
             }
             case "USER" -> {
                 Group group = groupRepository.findByRole("ROLE_USER");
+                user.addUserGroups(group);
+            }
+            case "AUDITOR" -> {
+                Group group = groupRepository.findByRole("ROLE_AUDITOR");
                 user.addUserGroups(group);
             }
             default -> {

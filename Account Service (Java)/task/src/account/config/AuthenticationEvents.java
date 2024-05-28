@@ -43,7 +43,7 @@ public class AuthenticationEvents {
 
     @EventListener
     public void onFailure(AbstractAuthenticationFailureEvent failures) {
-        String email = failures.getAuthentication().getPrincipal().toString();
+        String email = (String) failures.getAuthentication().getPrincipal();
         User user = userRepository.findByEmailIgnoreCase(email).orElse(null);
 
         if (user == null) {
@@ -57,7 +57,7 @@ public class AuthenticationEvents {
         }
 
         List<String> roles = getCurrentRoles(user);
-        if (roles.contains("ROLES_ADMINISTRATOR")) {
+        if (roles.contains("ROLE_ADMINISTRATOR")) {
             logService.createLog(
                     Event.LOGIN_FAILED.name(),
                     email,
@@ -67,31 +67,41 @@ public class AuthenticationEvents {
             return;
         }
 
-        if (user.getLoginAttempts() >= 5) {
-            logService.createLog(
-                    Event.BRUTE_FORCE.name(),
-                    user.getEmail(),
-                    this.request.getRequestURI(),
-                    this.request.getRequestURI()
-            );
-            user.setIsLocked(true);
-            userRepository.save(user);
-            logService.createLog(
-                    Event.LOCK_USER.name(),
-                    user.getEmail(),
-                    user.getEmail(),
-                    this.request.getRequestURI()
-            );
-        } else {
-            user.setLoginAttempts(user.getLoginAttempts() + 1);
-            userRepository.save(user);
-            logService.createLog(
-                    Event.LOGIN_FAILED.name(),
-                    user.getEmail(),
-                    this.request.getRequestURI(),
-                    this.request.getRequestURI()
-            );
+        if (!user.getIsLocked()) {
+            if (user.getLoginAttempts() < 4) {
+                user.setLoginAttempts(user.getLoginAttempts() + 1);
+                logService.createLog(
+                        Event.LOGIN_FAILED.name(),
+                        user.getEmail(),
+                        this.request.getRequestURI(),
+                        this.request.getRequestURI()
+                );
+                userRepository.save(user);
+            } else {
+                logService.createLog(
+                        Event.LOGIN_FAILED.name(),
+                        user.getEmail(),
+                        this.request.getRequestURI(),
+                        this.request.getRequestURI()
+                );
+                logService.createLog(
+                        Event.BRUTE_FORCE.name(),
+                        user.getEmail(),
+                        this.request.getRequestURI(),
+                        this.request.getRequestURI()
+                );
+                user.setIsLocked(true);
+                logService.createLog(
+                        Event.LOCK_USER.name(),
+                        user.getEmail(),
+                        "Lock user " + user.getEmail(),
+                        this.request.getRequestURI()
+                );
+                userRepository.save(user);
+            }
         }
+
+
     }
     public List<String> getCurrentRoles(User user) {
         Iterator<Group> iterator = user.getUserGroups().iterator();

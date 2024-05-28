@@ -32,24 +32,19 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
-    private final LogRepository logRepository;
     private final PasswordEncoder passwordEncoder;
     private final LogService logService;
-    private final Authentication auth;
     private final HttpServletRequest request;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, LogRepository logRepository, PasswordEncoder passwordEncoder, LogService logService, HttpServletRequest request) {
+    public AuthServiceImpl(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, LogService logService, HttpServletRequest request) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
-        this.logRepository = logRepository;
         this.passwordEncoder = passwordEncoder;
         this.logService = logService;
-        this.auth = SecurityContextHolder.getContext().getAuthentication();
         this.request = request;
     }
 
-    @Transactional
     @Override
     public User signup(SignupRequestDTO request) {
 
@@ -93,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String changepass(ChangePassRequestDTO request, UserDetails userDetails) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String newPassword = request.getNew_password();
 
         if (auth == null) {

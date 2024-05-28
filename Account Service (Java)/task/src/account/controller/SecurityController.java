@@ -22,7 +22,7 @@ public class SecurityController {
         this.logService = logService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"/events/", "/events"})
     public ResponseEntity<Object> getLogs() {
         List<Log> response = logService.getLogs();
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -23,7 +23,6 @@ public class User {
     @NotNull
     @NotBlank
     private String lastname;
-    @Email(regexp = "^.+@acme.com$")
     @Column(unique = true)
     @NotNull
     @NotBlank

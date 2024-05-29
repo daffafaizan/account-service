@@ -1,5 +1,6 @@
 package account.service.empl.impl;
 
+import account.dto.empl.response.PaymentResponseDTO;
 import account.exception.acct.PeriodIsInvalidException;
 import account.exception.auth.EmailNotFoundException;
 import account.model.Payroll;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,15 +32,15 @@ public class EmplServiceImpl implements EmplService {
     }
 
     @Override
-    public List<Payroll> getPayment(UserDetails details) {
+    public List<PaymentResponseDTO> getPayment(UserDetails details) {
         User user = userRepository.findByEmailIgnoreCase(details.getUsername())
                 .orElseThrow(EmailNotFoundException::new);
 
-        return payrollRepository.findAllByEmployeeOrderByPeriodDesc(user);
+        return convertPayrollToDTO(payrollRepository.findAllByEmployeeOrderByPeriodDesc(user));
     }
 
     @Override
-    public Payroll getPaymentByPeriod(UserDetails details, String period) {
+    public PaymentResponseDTO getPaymentByPeriod(UserDetails details, String period) {
         User user = userRepository.findByEmailIgnoreCase(details.getUsername())
                 .orElseThrow(EmailNotFoundException::new);
 
@@ -47,7 +49,13 @@ public class EmplServiceImpl implements EmplService {
         }
         YearMonth convertedPeriod = YearMonth.parse(period, periodFormat);
 
-        return payrollRepository.findByEmployeeAndPeriod(user, convertedPeriod);
+        Payroll payroll = payrollRepository.findByEmployeeAndPeriod(user, convertedPeriod);
+        return new PaymentResponseDTO(
+                payroll.getEmployee().getName(),
+                payroll.getEmployee().getLastname(),
+                payroll.getPeriod(),
+                payroll.getSalary()
+        );
     }
 
     private boolean isPeriodValid(String period) {
@@ -58,6 +66,21 @@ public class EmplServiceImpl implements EmplService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private List<PaymentResponseDTO> convertPayrollToDTO(List<Payroll> payrolls) {
+        List<PaymentResponseDTO> response = new ArrayList<>();
+        for (Payroll payroll: payrolls) {
+            PaymentResponseDTO dto = new PaymentResponseDTO(
+                    payroll.getEmployee().getName(),
+                    payroll.getEmployee().getLastname(),
+                    payroll.getPeriod(),
+                    payroll.getSalary()
+            );
+            response.add(dto);
+        }
+
+        return response;
     }
 
 }

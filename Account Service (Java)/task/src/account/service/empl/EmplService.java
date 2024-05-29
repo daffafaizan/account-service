@@ -1,11 +1,11 @@
 package account.service.empl;
 
-import account.model.Payroll;
+import account.dto.empl.response.PaymentResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
 public interface EmplService {
-    List<Payroll> getPayment(UserDetails details);
-    Payroll getPaymentByPeriod(UserDetails details, String period);
+    List<PaymentResponseDTO> getPayment(UserDetails details);
+    PaymentResponseDTO getPaymentByPeriod(UserDetails details, String period);
 }

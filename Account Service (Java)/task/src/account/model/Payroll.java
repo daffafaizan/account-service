@@ -24,12 +24,6 @@ public class Payroll {
     @JoinColumn(name = "users_id")
     private User employee;
     @NotNull
-    @NotBlank
-    private String name;
-    @NotNull
-    @NotBlank
-    private String lastname;
-    @NotNull
     @DateTimeFormat(pattern = "mm-YYYY")
     private YearMonth period;
     @NotNull
@@ -47,18 +41,6 @@ public class Payroll {
     }
     public void setEmployee(User employee) {
         this.employee = employee;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getLastname() {
-        return this.lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
     public String getPeriod() {
         return yearMonthToString(this.period);

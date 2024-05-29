@@ -58,8 +58,6 @@ public class AcctServiceImpl implements AcctService {
             Payroll payroll = new Payroll();
 
             payroll.setEmployee(user);
-            payroll.setName(user.getName());
-            payroll.setLastname(user.getLastname());
             payroll.setPeriod(period);
             payroll.setSalary(request.getSalary());
             payrollRepository.save(payroll);

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,6 +31,9 @@ public class User {
     private String password;
     @JsonIgnore
     private String authority;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")
+    @JsonIgnore
+    private List<Payroll> payrolls;
 
     public Long getId() {
         return this.id;
@@ -65,5 +70,14 @@ public class User {
     }
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+    public List<Payroll> getPayrolls() {
+        return this.payrolls;
+    }
+    public void setPayrolls(List<Payroll> payrolls) {
+        this.payrolls = payrolls;
+    }
+    public void addPayroll(Payroll payroll) {
+        this.payrolls.add(payroll);
     }
 }

@@ -2,7 +2,6 @@ package account.service.auth.impl;
 
 import account.adapter.UserAdapter;
 import account.dto.auth.request.ChangePassRequestDTO;
-import account.dto.auth.response.ChangePassResponseDTO;
 import account.exception.auth.*;
 import account.dto.auth.request.SignupRequestDTO;
 import account.exception.auth.EmailAlreadyExistsException;
@@ -22,10 +21,10 @@ import java.util.Arrays;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

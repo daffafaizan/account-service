@@ -1,5 +1,8 @@
 package account.exception;
 
+import account.exception.acct.GeneralUploadPayrollException;
+import account.exception.acct.NegativeSalaryException;
+import account.exception.acct.PeriodIsInvalidException;
 import account.exception.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,13 @@ public class CustomExceptionHandler {
         response.put("path", path);
 
         return response;
+    }
+
+    // Authentication
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> methodArgumentNotValidExceptionHandler(Exception exception, HttpServletRequest request) {
+        return new ResponseEntity<>(customExceptionResponse(HttpStatus.BAD_REQUEST, request, null), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = RuntimeException.class)

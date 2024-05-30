@@ -37,8 +37,6 @@ public class AcctServiceImpl implements AcctService {
     @Transactional
     public void uploadPayrolls(List<PayrollRequestDTO> requests) {
         for (PayrollRequestDTO request: requests) {
-            User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
-                    .orElseThrow(EmailNotFoundException::new);
 
             if (!isPeriodValid(request.getPeriod())) {
                 throw new PeriodIsInvalidException();
@@ -49,15 +47,17 @@ public class AcctServiceImpl implements AcctService {
 
             YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
 
-            if (isEmployeeWithPeriodExist(request.getEmployee(), period)) {
+            User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
+                    .orElseThrow(EmailNotFoundException::new);
+
+            if (isEmployeeWithPeriodExist(user, period)) {
                 throw new GeneralUploadPayrollException();
             }
 
+
             Payroll payroll = new Payroll();
 
-            payroll.setEmployee(request.getEmployee());
-            payroll.setName(user.getName());
-            payroll.setLastname(user.getLastname());
+            payroll.setEmployee(user);
             payroll.setPeriod(period);
             payroll.setSalary(request.getSalary());
             payrollRepository.save(payroll);
@@ -66,7 +66,8 @@ public class AcctServiceImpl implements AcctService {
 
     @Override
     public void updatePayroll(PayrollRequestDTO request) {
-        String employee = request.getEmployee();
+        User user = userRepository.findByEmailIgnoreCase(request.getEmployee())
+                .orElseThrow(EmailNotFoundException::new);
 
         if (!isPeriodValid(request.getPeriod())) {
             throw new PeriodIsInvalidException();
@@ -75,13 +76,13 @@ public class AcctServiceImpl implements AcctService {
         YearMonth period = YearMonth.parse(request.getPeriod(), periodFormat);
         BigDecimal salary = request.getSalary();
 
-        Payroll payroll = payrollRepository.findByEmployeeIgnoreCaseAndPeriod(employee, period);
+        Payroll payroll = payrollRepository.findByEmployeeAndPeriod(user, period);
         payroll.setSalary(salary);
         payrollRepository.save(payroll);
     }
 
-    private boolean isEmployeeWithPeriodExist(String employee, YearMonth period) {
-        return payrollRepository.findByEmployeeIgnoreCaseAndPeriod(employee, period) != null;
+    private boolean isEmployeeWithPeriodExist(User employee, YearMonth period) {
+        return payrollRepository.findByEmployeeAndPeriod(employee, period) != null;
     }
 
     private boolean isPeriodValid(String period) {

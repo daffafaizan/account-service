@@ -3,13 +3,12 @@ package account.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -46,6 +45,11 @@ public class User {
     private Boolean isLocked;
     @JsonIgnore
     private Integer loginAttempts;
+    @JsonIgnore
+    private String authority;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")
+    @JsonIgnore
+    private List<Payroll> payrolls;
 
     public Long getId() {
         return this.id;
@@ -100,5 +104,14 @@ public class User {
     }
     public void setLoginAttempts(Integer loginAttempts) {
         this.loginAttempts = loginAttempts;
+    }
+    public List<Payroll> getPayrolls() {
+        return this.payrolls;
+    }
+    public void setPayrolls(List<Payroll> payrolls) {
+        this.payrolls = payrolls;
+    }
+    public void addPayroll(Payroll payroll) {
+        this.payrolls.add(payroll);
     }
 }

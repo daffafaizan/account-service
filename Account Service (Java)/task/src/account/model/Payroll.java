@@ -19,15 +19,10 @@ public class Payroll {
     @JsonIgnore
     private Long id;
     @NotNull
-    @NotBlank
     @JsonIgnore
-    private String employee;
-    @NotNull
-    @NotBlank
-    private String name;
-    @NotNull
-    @NotBlank
-    private String lastname;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "users_id")
+    private User employee;
     @NotNull
     @DateTimeFormat(pattern = "mm-YYYY")
     private YearMonth period;
@@ -41,23 +36,11 @@ public class Payroll {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getEmployee() {
+    public User getEmployee() {
         return this.employee;
     }
-    public void setEmployee(String employee) {
+    public void setEmployee(User employee) {
         this.employee = employee;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getLastname() {
-        return this.lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
     public String getPeriod() {
         return yearMonthToString(this.period);

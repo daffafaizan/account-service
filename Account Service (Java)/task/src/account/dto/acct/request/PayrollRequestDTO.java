@@ -15,7 +15,6 @@ public class PayrollRequestDTO {
     @NotNull
     @NotBlank
     @DateTimeFormat(pattern = "mm-YYYY")
-    @Column(unique = true)
     private String period;
     @NotNull
     @Min(value = 0)

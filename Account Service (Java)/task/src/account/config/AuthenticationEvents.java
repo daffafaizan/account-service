@@ -68,22 +68,16 @@ public class AuthenticationEvents {
         }
 
         if (!user.getIsLocked()) {
+            logService.createLog(
+                    Event.LOGIN_FAILED.name(),
+                    user.getEmail(),
+                    this.request.getRequestURI(),
+                    this.request.getRequestURI()
+            );
             if (user.getLoginAttempts() < 4) {
                 user.setLoginAttempts(user.getLoginAttempts() + 1);
-                logService.createLog(
-                        Event.LOGIN_FAILED.name(),
-                        user.getEmail(),
-                        this.request.getRequestURI(),
-                        this.request.getRequestURI()
-                );
                 userRepository.save(user);
             } else {
-                logService.createLog(
-                        Event.LOGIN_FAILED.name(),
-                        user.getEmail(),
-                        this.request.getRequestURI(),
-                        this.request.getRequestURI()
-                );
                 logService.createLog(
                         Event.BRUTE_FORCE.name(),
                         user.getEmail(),

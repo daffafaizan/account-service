@@ -1,11 +1,13 @@
 package account.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 @Entity
@@ -20,7 +22,6 @@ public class User {
     @NotNull
     @NotBlank
     private String lastname;
-    @Email(regexp = "^.+@acme.com$")
     @Column(unique = true)
     @NotNull
     @NotBlank
@@ -29,6 +30,21 @@ public class User {
     @NotNull
     @NotBlank
     private String password;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    },
+    fetch = FetchType.EAGER)
+    @JoinTable(name = "user_groups",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    @JsonProperty("roles")
+    private Set<Group> userGroups = new HashSet<>();
+    @JsonIgnore
+    private Boolean isLocked;
+    @JsonIgnore
+    private Integer loginAttempts;
     @JsonIgnore
     private String authority;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")
@@ -65,11 +81,29 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getAuthority() {
-        return this.authority;
+    public Set<Group> getUserGroups() {
+        return this.userGroups;
     }
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setUserGroups(Set<Group> userGroups) {
+        this.userGroups = userGroups;
+    }
+    public void addUserGroups(Group group) {
+        this.userGroups.add(group);
+    }
+    public void removeUserGroup(Group group) {
+        this.userGroups.remove(group);
+    }
+    public Boolean getIsLocked() {
+        return this.isLocked;
+    }
+    public void setIsLocked(Boolean isLocked) {
+        this.isLocked = isLocked;
+    }
+    public Integer getLoginAttempts() {
+        return this.loginAttempts;
+    }
+    public void setLoginAttempts(Integer loginAttempts) {
+        this.loginAttempts = loginAttempts;
     }
     public List<Payroll> getPayrolls() {
         return this.payrolls;

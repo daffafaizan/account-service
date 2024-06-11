@@ -3,6 +3,7 @@ package account.controller;
 import account.dto.auth.request.ChangePassRequestDTO;
 import account.dto.auth.request.SignupRequestDTO;
 import account.dto.auth.response.ChangePassResponseDTO;
+import account.dto.auth.response.SignupResponseDTO;
 import account.model.User;
 import account.service.auth.AuthService;
 import jakarta.validation.Valid;
@@ -31,7 +32,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody @Valid SignupRequestDTO request) {
         User response = authService.signup(request);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new SignupResponseDTO(response), HttpStatus.OK);
     }
 
     @PostMapping("/changepass")
